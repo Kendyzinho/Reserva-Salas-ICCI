@@ -3,31 +3,21 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { MisReservasComponent } from './features/estudiante/mis-reservas/mis-reservas.component';
 import { CrearReservaComponent } from './features/estudiante/crear-reserva/crear-reserva.component';
 import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
-import { authGuard } from './core/guards/auth.guard';
-import { roleGuard } from './core/guards/role.guard';
+import { CalendarioComponent } from './features/estudiante/calendario/calendario.component'; 
 
 export const routes: Routes = [
+  // 1. REGLA DE ORO: Si entro a la raíz, mándame al calendario
+  { path: '', redirectTo: 'calendario', pathMatch: 'full' },
+
+  // 2. Ruta directa del calendario (SIN GUARDS NI NADA)
+  { path: 'calendario', component: CalendarioComponent },
+
+  // 3. El resto de rutas
   { path: 'login', component: LoginComponent },
+  { path: 'mis-reservas', component: MisReservasComponent },
+  { path: 'crear-reserva', component: CrearReservaComponent },
+  { path: 'admin', component: DashboardComponent },
   
-  // Rutas protegidas (Usuario logueado)
-  {
-    path: '',
-    canActivate: [authGuard],
-    children: [
-      { path: 'mis-reservas', component: MisReservasComponent },
-      { path: 'crear-reserva', component: CrearReservaComponent },
-      
-      // Solo Ayudantes
-      { 
-        path: 'admin', 
-        canActivate: [roleGuard],
-        component: DashboardComponent 
-      },
-      
-      // Redirección por defecto al entrar a la raiz
-      { path: '', redirectTo: 'mis-reservas', pathMatch: 'full' }
-    ]
-  },
-  
-  { path: '**', redirectTo: 'login' }
+  // 4. Si escribo cualquier disparate, mándame al calendario también (para probar)
+  { path: '**', redirectTo: 'calendario' }
 ];

@@ -1,1 +1,26 @@
-<p>navbar works!</p>
+<nav class="navbar-container">
+  <div class="logo-container">
+    <img 
+  src="images/logoweb_UTA.png" 
+  alt="Logo UTA" 
+  class="logo-img"
+    >
+    <div class="brand-text">
+      <h1>Reserva de Salas</h1>
+      <span>Universidad de Tarapacá</span>
+    </div>
+  </div>
+
+  @if (isLoggedIn && usuario) {
+    <div class="user-controls">
+      <div class="user-info">
+        <span class="user-name">{{ usuario.nombre }}</span>
+        <span class="user-role badge">{{ usuario.rol }}</span>
+      </div>
+      
+      <button (click)="onLogout()" class="btn-logout">
+        Cerrar Sesión
+      </button>
+    </div>
+  }
+</nav>

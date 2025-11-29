@@ -1,0 +1,18 @@
+footer {
+  background-color: #1a1a1a;
+  color: #aaa;
+  text-align: center;
+  padding: 20px;
+  margin-top: auto; /* Truco para que siempre se quede abajo si hay poco contenido */
+  border-top: 4px solid #ffcc00; /* Borde amarillo UTA */
+}
+
+.footer-content p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+}
+
+.small {
+  font-size: 0.8rem;
+  opacity: 0.6;
+}

@@ -1,0 +1,53 @@
+<div class="calendario-container">
+  
+  <div class="header-control">
+    <h2>Disponibilidad Semanal</h2>
+    
+    <div class="filtro-sala">
+      <label>Selecciona Sala:</label>
+      <select [(ngModel)]="salaSeleccionada" (change)="onCambioSala()">
+        @for (sala of salas; track sala.id) {
+          <option [value]="sala.id">{{ sala.nombre }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Horario</th>
+          @for (dia of diasSemana; track dia) {
+            <th>{{ dia }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (hora of bloquesHorarios; track hora) {
+          <tr>
+            <td class="hora-celda">{{ hora }}</td>
+
+            @for (dia of diasSemana; track dia) {
+              <td>
+                @let reserva = obtenerReserva(dia, hora);
+
+                @if (reserva) {
+                  <div class="card-reserva ocupado">
+                    <span class="motivo">{{ reserva.motivo }}</span>
+                    <small>Ocupado</small>
+                  </div>
+                } @else {
+                  <div class="card-reserva libre">
+                    <span>Libre</span>
+                    <button class="btn-add">+</button>
+                   </div>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

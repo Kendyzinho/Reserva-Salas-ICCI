@@ -1,0 +1,67 @@
+<div
+  class="min-h-screen flex flex-col justify-center items-center bg-gray-100 p-6 font-sans"
+>
+  <div class="w-full max-w-[1400px] flex flex-col gap-10">
+    <!-- TITULO -->
+    <h1 class="text-3xl font-bold text-blue-700 text-center drop-shadow-md">
+      Estadísticas de Salas
+    </h1>
+
+    <!-- CONTADORES -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+      <div class="bg-white shadow-xl rounded-2xl p-8 text-center">
+        <p class="text-gray-600 font-semibold text-lg">Total de Salas</p>
+        <p class="text-4xl font-bold text-blue-600">{{ totalSalas() }}</p>
+      </div>
+      <div class="bg-white shadow-xl rounded-2xl p-8 text-center">
+        <p class="text-gray-600 font-semibold text-lg">Salas Disponibles</p>
+        <p class="text-4xl font-bold text-green-500">
+          {{ totalDisponibles() }}
+        </p>
+      </div>
+      <div class="bg-white shadow-xl rounded-2xl p-8 text-center">
+        <p class="text-gray-600 font-semibold text-lg">En Mantención</p>
+        <p class="text-4xl font-bold text-red-500">{{ totalMantencion() }}</p>
+      </div>
+      <div class="bg-white shadow-xl rounded-2xl p-8 text-center">
+        <p class="text-gray-600 font-semibold text-lg">Capacidad Total</p>
+        <p class="text-4xl font-bold text-yellow-500">{{ capacidadTotal() }}</p>
+      </div>
+    </div>
+
+    <!-- GRÁFICOS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <!-- Doughnut Chart -->
+      <div
+        class="bg-white shadow-xl rounded-2xl p-8 flex flex-col items-center"
+      >
+        <h3 class="text-3xl font-semibold mb-6">Disponibilidad de Salas</h3>
+        <div class="w-72 h-72 md:w-80 md:h-80">
+          <canvas
+            baseChart
+            [data]="disponibilidadData"
+            [type]="'doughnut'"
+            [options]="doughnutOptions"
+          >
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Bar Chart -->
+      <div
+        class="bg-white shadow-xl rounded-2xl p-8 flex flex-col items-center"
+      >
+        <h3 class="text-3xl font-semibold mb-6">Salas por Tipo</h3>
+        <div class="w-full h-72 md:h-80">
+          <canvas
+            baseChart
+            [data]="tipoData"
+            [type]="'bar'"
+            [options]="barOptions"
+          >
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

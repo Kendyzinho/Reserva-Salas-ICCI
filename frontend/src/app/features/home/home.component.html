@@ -1,0 +1,207 @@
+<mat-toolbar class="landing-navbar">
+  <span class="logo">
+    <mat-icon color="primary">meeting_room</mat-icon> {{ title }}
+  </span>
+
+  <span class="spacer"></span>
+  <button
+    mat-flat-button
+    routerLink="/estadisticas"
+    color="primary"
+    class="action-button"
+  >
+    Estadisticas
+  </button>
+  <button
+    mat-flat-button
+    routerLink="/gestionar-sala"
+    color="primary"
+    class="action-button"
+  >
+    Gestionar salas
+  </button>
+  <button mat-flat-button color="primary" routerLink="" class="action-button">
+    Calendario
+  </button>
+  <button
+    mat-flat-button
+    routerLink="/mis-reservas"
+    color="primary"
+    class="action-button"
+  >
+    Mis Reservas
+  </button>
+
+  <!-- Botón para abrir modal login -->
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="abrirLogin()"
+    class="action-button"
+  >
+    Acceder Intranet
+  </button>
+
+  <button mat-icon-button aria-label="Ayuda">
+    <mat-icon>help_outline</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="hero-container">
+  <div class="hero-content">
+    <h1 class="hero-title">Sistema de Gestión de Salas UTA.</h1>
+    <h1 class="hero-subtitle">
+      Reserva laboratorios, auditorios y salas de reuniones de forma rápida y
+      centralizada.
+    </h1>
+    <button
+      mat-flat-button
+      color="accent"
+      class="get-started-button"
+      routerLink="/reservar-sala"
+    >
+      Reservar Ahora 📅
+    </button>
+  </div>
+</div>
+
+<div class="features-section">
+  @for (feature of features; track feature.title) {
+  <mat-card class="feature-card">
+    <mat-card-content>
+      <mat-icon color="primary" class="feature-icon">{{
+        feature.icon
+      }}</mat-icon>
+      <h3 class="feature-title">{{ feature.title }}</h3>
+      <p class="feature-description">{{ feature.description }}</p>
+    </mat-card-content>
+  </mat-card>
+  }
+</div>
+
+<!-- MODAL LOGIN / REGISTRO -->
+<div
+  *ngIf="mostrarLogin"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+>
+  <div class="bg-white rounded-3xl shadow-2xl w-[500px] p-10 relative">
+    <h2 class="text-3xl font-bold text-center mb-8">
+      {{ modoRegistro ? "Registrarse" : "Iniciar Sesión" }}
+    </h2>
+
+    <!-- FORMULARIO LOGIN -->
+    <form
+      *ngIf="!modoRegistro"
+      [formGroup]="loginForm"
+      (ngSubmit)="login()"
+      class="flex flex-col gap-6"
+    >
+      <input
+        type="email"
+        placeholder="Correo electrónico"
+        formControlName="email"
+        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+      />
+      <input
+        type="password"
+        placeholder="Contraseña"
+        formControlName="password"
+        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+      />
+
+      <div class="flex justify-between items-center mt-4">
+        <button
+          type="submit"
+          class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105"
+        >
+          Entrar
+        </button>
+        <button
+          type="button"
+          (click)="cerrarLogin()"
+          class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105"
+        >
+          Cancelar
+        </button>
+      </div>
+
+      <p class="text-center text-gray-500 mt-4">
+        ¿No tienes cuenta?
+        <span
+          class="text-blue-500 cursor-pointer hover:underline"
+          (click)="abrirRegistro()"
+        >
+          Regístrate
+        </span>
+      </p>
+    </form>
+
+    <!-- FORMULARIO REGISTRO -->
+    <form
+      *ngIf="modoRegistro"
+      [formGroup]="registerForm"
+      (ngSubmit)="registrar()"
+      class="flex flex-col gap-6"
+    >
+      <input
+        type="text"
+        placeholder="Nombre completo"
+        formControlName="nombre"
+        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+      />
+      <input
+        type="email"
+        placeholder="Correo @alumnos.uta.cl"
+        formControlName="email"
+        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+      />
+      <input
+        type="password"
+        placeholder="Contraseña"
+        formControlName="password"
+        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+      />
+      <input
+        type="password"
+        placeholder="Confirmar contraseña"
+        formControlName="confirmarPassword"
+        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+      />
+
+      <div class="flex justify-between items-center mt-4">
+        <button
+          type="submit"
+          class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105"
+        >
+          Registrarse
+        </button>
+        <button
+          type="button"
+          (click)="cerrarLogin()"
+          class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105"
+        >
+          Cancelar
+        </button>
+      </div>
+
+      <p class="text-center text-gray-500 mt-4">
+        ¿Ya tienes cuenta?
+        <span
+          class="text-blue-500 cursor-pointer hover:underline"
+          (click)="abrirLogin()"
+        >
+          Inicia Sesión
+        </span>
+      </p>
+    </form>
+
+    <!-- Botón cerrar modal -->
+    <button
+      type="button"
+      (click)="cerrarLogin()"
+      class="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+    >
+      ✖
+    </button>
+  </div>
+</div>

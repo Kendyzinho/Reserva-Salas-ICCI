@@ -1,7 +1,8 @@
 export interface Usuario {
-  id: string; // JSON Server usa strings o numbers
-  email: string;
-  password?: string;
+  id_usuario: number;
   nombre: string;
-  rol: 'ESTUDIANTE' | 'AYUDANTE';
+  apellido: string;
+  correo: string;
+  rut: string;
+  rol: string;
 }

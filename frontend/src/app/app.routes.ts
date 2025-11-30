@@ -1,33 +1,20 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './features/auth/login/login.component';
 import { MisReservasComponent } from './features/estudiante/mis-reservas/mis-reservas.component';
 import { CrearReservaComponent } from './features/estudiante/crear-reserva/crear-reserva.component';
-import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
-import { authGuard } from './core/guards/auth.guard';
-import { roleGuard } from './core/guards/role.guard';
+import { HomeComponent } from './features/home/home.component';
+import { GestionarSalaComponent } from './features/admin/gestionar-sala/gestionar-sala.component';
+import { EstadisticasComponent } from './features/admin/estadisticas/estadisticas.component';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  
-  // Rutas protegidas (Usuario logueado)
+  // 1. Ruta principal
+  { path: '', component: HomeComponent },
+
+  { path: 'mis-reservas', component: MisReservasComponent },
+  { path: 'crear-reserva', component: CrearReservaComponent },
+  { path: 'gestionar-sala', component: GestionarSalaComponent },
   {
-    path: '',
-    canActivate: [authGuard],
-    children: [
-      { path: 'mis-reservas', component: MisReservasComponent },
-      { path: 'crear-reserva', component: CrearReservaComponent },
-      
-      // Solo Ayudantes
-      { 
-        path: 'admin', 
-        canActivate: [roleGuard],
-        component: DashboardComponent 
-      },
-      
-      // Redirección por defecto al entrar a la raiz
-      { path: '', redirectTo: 'mis-reservas', pathMatch: 'full' }
-    ]
+    path: 'estadisticas',
+    component: EstadisticasComponent,
   },
-  
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

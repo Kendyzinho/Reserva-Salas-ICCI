@@ -1,49 +1,112 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, tap, map } from 'rxjs';
+// src/app/services/auth.service.ts
+import { Injectable } from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
 import { Usuario } from '../models/usuario.model';
 import { Router } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
+interface DecodedToken {
+  sub: number; // id del usuario en el backend
+  correo: string;
+  rol: string; // 'funcionario' | 'secretaria' | 'administrador'
+  exp: number; // timestamp en segundos
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private http = inject(HttpClient);
-  private router = inject(Router);
-  private apiUrl = 'http://localhost:3000'; // Tu JSON Server
+  private readonly TOKEN_KEY = 'authToken';
+  private readonly USER_KEY = 'authUser';
+  private readonly LAST_SESSION_KEY = 'lastSession';
 
-  // Login: Busca usuario por email y pass
-  login(email: string, pass: string): Observable<Usuario | null> {
-    return this.http.get<Usuario[]>(`${this.apiUrl}/usuarios?email=${email}&password=${pass}`)
-      .pipe(
-        map(users => {
-          if (users.length > 0) {
-            const user = users[0];
-            // Guardamos en localStorage
-            localStorage.setItem('user', JSON.stringify(user));
-            return user;
-          }
-          return null;
-        })
-      );
+  constructor(private router: Router) {}
+
+  // Guarda token + usuario
+  login(token: string, user: Usuario): void {
+    localStorage.setItem(this.TOKEN_KEY, token);
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    localStorage.setItem(this.LAST_SESSION_KEY, new Date().toISOString());
   }
 
-  logout() {
-    localStorage.removeItem('user');
-    this.router.navigate(['/login']);
+  logout(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.USER_KEY);
+    // te mando SIEMPRE a la home ('/')
+    this.router.navigateByUrl('/');
   }
 
-  getUser(): Usuario | null {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+  getToken(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
   }
 
-  isAyudante(): boolean {
-    const user = this.getUser();
-    return user?.rol === 'AYUDANTE';
+  public getUserFromStorage(): Usuario | null {
+    const raw = localStorage.getItem(this.USER_KEY);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as Usuario;
+    } catch {
+      return null;
+    }
   }
-  
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('user');
+
+  private getDecodedToken(): DecodedToken | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      return jwtDecode<DecodedToken>(token);
+    } catch (err) {
+      console.error('Error decodificando token', err);
+      return null;
+    }
+  }
+
+  // -------- Helpers de sesión --------
+
+  isLoggedIn(): boolean {
+    const t = this.getDecodedToken();
+    if (!t) return false;
+    return Date.now() < t.exp * 1000;
+  }
+
+  getUserRole(): string | null {
+    const t = this.getDecodedToken();
+    if (t?.rol) return t.rol; // viene en minúscula del backend
+
+    const u = this.getUserFromStorage();
+    return u?.rol ?? null;
+  }
+
+  getUserId(): number | null {
+    const t = this.getDecodedToken();
+    if (t?.sub) return t.sub;
+
+    const u = this.getUserFromStorage();
+    return u?.id_usuario ?? null;
+  }
+
+  getUserEmail(): string | null {
+    const t = this.getDecodedToken();
+    if (t?.correo) return t.correo;
+
+    const u = this.getUserFromStorage();
+    return u?.correo ?? null;
+  }
+
+  getLastSessionISO(): string | null {
+    return localStorage.getItem(this.LAST_SESSION_KEY);
+  }
+
+  // -------- Ruta home según rol --------
+  getHomeRouteForRole(): string {
+    const rol = this.getUserRole();
+    const id = this.getUserId();
+
+    if (!rol || !id) return '/';
+
+    const r = rol.toLowerCase();
+
+    if (r === 'estudiante') return `/funcionario/${id}/perfil`;
+    if (r === 'ayudante') return `/secretaria/${id}/perfil`;
+
+    return '/';
   }
 }

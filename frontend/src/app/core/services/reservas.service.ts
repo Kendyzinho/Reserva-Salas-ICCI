@@ -30,4 +30,24 @@ export class ReservasService {
   crearReserva(reserva: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/reservas`, reserva);
   }
+
+  crearSala(sala: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/salas`, sala);
+  }
+
+  actualizarEstadoSala(id: number, estado: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/salas/${id}`, { estado });
+  }
+
+  eliminarSala(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/salas/${id}`);
+  }
+
+  getTodasLasReservas(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/reservas/admin/todas`);
+  }
+
+  cambiarEstadoReserva(id: number, estado: 'APROBADA' | 'RECHAZADA'): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/reservas/${id}/estado`, { estado });
+  }
 }

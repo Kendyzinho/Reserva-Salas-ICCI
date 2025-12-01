@@ -146,3 +146,71 @@ app.get('/api/reservas/usuario/:userId', (req, res) => {
         res.json(result);
     });
 });
+
+app.post('/api/salas', (req, res) => {
+    const { nombre, capacidad, ubicacion } = req.body;
+    const sql = 'INSERT INTO salas (nombre, capacidad, ubicacion, estado) VALUES (?, ?, ?, "DISPONIBLE")';
+    db.query(sql, [nombre, capacidad, ubicacion], (err, result) => {
+        if (err) return res.status(500).json(err);
+        res.json({ message: 'Sala creada', id: result.insertId });
+    });
+});
+
+// Cambiar Estado (Bloquear/Desbloquear)
+app.patch('/api/salas/:id', (req, res) => {
+    const { estado } = req.body; // 'DISPONIBLE' o 'MANTENCION'
+    const { id } = req.params;
+    const sql = 'UPDATE salas SET estado = ? WHERE id = ?';
+    db.query(sql, [estado, id], (err, result) => {
+        if (err) return res.status(500).json(err);
+        res.json({ message: 'Estado actualizado' });
+    });
+});
+
+// Eliminar Sala
+app.delete('/api/salas/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'DELETE FROM salas WHERE id = ?';
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.status(500).json({ message: 'Error al eliminar (quizás tiene reservas)' });
+        res.json({ message: 'Sala eliminada' });
+    });
+});
+
+app.get('/api/reservas/admin/todas', (req, res) => {
+    const sql = `
+        SELECT 
+            r.id, 
+            r.fecha, 
+            r.bloque_inicio as bloqueInicio, 
+            r.bloque_fin as bloqueFin, 
+            r.motivo, 
+            r.estado,
+            r.cantidad_personas as cantidadPersonas,
+            u.nombre as nombreUsuario,
+            u.rol as rolUsuario,
+            s.nombre as nombreSala
+        FROM reservas r
+        JOIN usuarios u ON r.usuario_id = u.id
+        JOIN salas s ON r.sala_id = s.id
+        ORDER BY FIELD(r.estado, 'PENDIENTE', 'APROBADA', 'RECHAZADA'), r.fecha DESC
+    `;
+    
+    db.query(sql, (err, result) => {
+        if (err) return res.status(500).json(err);
+        res.json(result);
+    });
+});
+
+// 2. Actualizar estado de una reserva (Aprobar/Rechazar)
+app.patch('/api/reservas/:id/estado', (req, res) => {
+    const { id } = req.params;
+    const { estado } = req.body; // 'APROBADA' o 'RECHAZADA'
+
+    const sql = 'UPDATE reservas SET estado = ? WHERE id = ?';
+    
+    db.query(sql, [estado, id], (err, result) => {
+        if (err) return res.status(500).json(err);
+        res.json({ message: `Reserva ${estado} correctamente` });
+    });
+});

@@ -1,33 +1,69 @@
 <nav class="navbar-container">
   
+  <!-- LOGO -->
   <div class="logo-container" routerLink="/">
-    <img src="images/logoweb_UTA.png" alt="Logo UTA" class="logo-img">
+    <img 
+      src="images/logoweb_UTA.png" 
+      alt="Logo UTA" 
+      class="logo-img"
+    >
     <div class="brand-text">
       <h1>Reserva de Salas</h1>
       <span>Universidad de Tarapacá</span>
     </div>
   </div>
 
+  <!-- ZONA DE USUARIO -->
   @if (isLoggedIn && usuario) {
     <div class="user-container">
       
+      <!-- Trigger (Nombre) -->
       <div class="user-trigger" (click)="toggleMenu()">
-        <span class="user-name">{{ usuario.nombre || 'Usuario Prueba' }}</span>
-        <span class="user-role badge">{{ usuario.rol || 'ESTUDIANTE' }}</span>
+        <span class="user-name">{{ usuario.nombre }}</span>
+        <!-- Mostramos el rol con un color distinto si es Ayudante (opcional, por CSS) -->
+        <span class="user-role badge">{{ usuario.rol }}</span>
         <span class="arrow">▼</span>
       </div>
 
+      <!-- Menú Desplegable -->
       @if (menuAbierto) {
         <div class="dropdown-menu">
-          <a (click)="abrirPerfil()" class="dropdown-item">👤 Mi Perfil</a>
-          <a routerLink="/mis-reservas" (click)="toggleMenu()" class="dropdown-item">📅 Mis Reservas</a>
+          
+          <!-- COMÚN: Todos pueden ver su perfil -->
+          <a (click)="abrirPerfil()" class="dropdown-item">
+            👤 Mi Perfil
+          </a>
+
+          <!-- OPCIONES PARA ESTUDIANTE -->
+          @if (!isAyudante) {
+            <a routerLink="/mis-reservas" (click)="toggleMenu()" class="dropdown-item">
+              📅 Mis Reservas
+            </a>
+          }
+
+          <!-- OPCIONES PARA AYUDANTE -->
+          @if (isAyudante) {
+            <a routerLink="/admin" (click)="toggleMenu()" class="dropdown-item">
+              📋 Gestionar Solicitudes
+            </a>
+            <!-- Opción para HU-12: Gestionar Salas -->
+            <a routerLink="/admin/salas" (click)="toggleMenu()" class="dropdown-item">
+              🏢 Gestionar Salas
+            </a>
+          }
+
           <hr class="divider">
-          <button (click)="onLogout()" class="dropdown-item logout-btn">🚪 Cerrar Sesión</button>
+
+          <!-- COMÚN: Cerrar Sesión -->
+          <button (click)="onLogout()" class="dropdown-item logout-btn">
+            🚪 Cerrar Sesión
+          </button>
         </div>
       }
     </div>
   }
 
+  <!-- MODAL PERFIL -->
   @if (mostrarModalPerfil) {
     <app-perfil-modal 
       [usuario]="usuario" 

@@ -4,36 +4,37 @@ import { MisReservasComponent } from './features/estudiante/mis-reservas/mis-res
 import { CrearReservaComponent } from './features/estudiante/crear-reserva/crear-reserva.component';
 import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
 import { CalendarioComponent } from './features/estudiante/calendario/calendario.component';
+// 1. IMPORTAR EL NUEVO COMPONENTE
+import { GestionSalasComponent } from './features/admin/gestion-salas/gestion-salas.component';
 
-// Importamos los guardias de seguridad
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
-  // 1. RUTA PÚBLICA (La única a la que se puede entrar sin llave)
   { path: 'login', component: LoginComponent },
 
-  // 2. RUTAS PRIVADAS (Protegidas por authGuard)
   {
     path: '',
-    canActivate: [authGuard], // <--- ESTO ES LO QUE "CIERRA LA SESIÓN" REALMENTE
+    canActivate: [authGuard],
     children: [
-      // Si entran a la raiz '/', los mandamos al calendario (Dashboard principal)
       { path: '', redirectTo: 'calendario', pathMatch: 'full' },
-      
       { path: 'calendario', component: CalendarioComponent },
       { path: 'mis-reservas', component: MisReservasComponent },
       { path: 'crear-reserva', component: CrearReservaComponent },
       
-      // Zona Admin (Doble protección: Login + Ser Ayudante)
+      // ZONA ADMIN
       { 
         path: 'admin', 
         canActivate: [roleGuard],
-        component: DashboardComponent 
+        children: [
+            // Si entran a /admin van al dashboard
+            { path: '', component: DashboardComponent },
+            // 2. AGREGAR LA RUTA DE SALAS AQUÍ
+            { path: 'salas', component: GestionSalasComponent } 
+        ]
       },
     ]
   },
 
-  // 3. COMODÍN: Cualquier ruta desconocida manda al login
   { path: '**', redirectTo: 'login' }
 ];

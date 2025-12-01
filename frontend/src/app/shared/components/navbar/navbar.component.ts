@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -12,15 +12,18 @@ import { PerfilModalComponent } from '../perfil-modal/perfil-modal.component';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   private authService = inject(AuthService);
+  
   usuario: Usuario | null = null;
   
   menuAbierto = false; 
   mostrarModalPerfil = false;
 
-  constructor() {
-    this.usuario = this.authService.getUser();
+  ngOnInit() {
+    this.authService.currentUser$.subscribe(user => {
+      this.usuario = user;
+    });
   }
 
   toggleMenu() {
@@ -36,13 +39,17 @@ export class NavbarComponent {
     this.mostrarModalPerfil = false;
   }
 
-  // --- ESTA ES LA FUNCIÓN CLAVE ---
   onLogout() {
     this.menuAbierto = false; 
-    this.authService.logout(); // Esto borra localStorage y redirige a /login
+    this.authService.logout();
   }
   
   get isLoggedIn(): boolean {
-    return this.authService.isAuthenticated();
+    return !!this.usuario;
+  }
+
+  // NUEVO: Helper para saber si es ayudante en la vista
+  get isAyudante(): boolean {
+    return this.usuario?.rol === 'AYUDANTE';
   }
 }

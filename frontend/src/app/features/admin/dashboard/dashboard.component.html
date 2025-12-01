@@ -1,1 +1,64 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <h2>📋 Gestión de Solicitudes</h2>
+  <p class="subtitle">Administra las reservas solicitadas por los estudiantes.</p>
+
+  @if (loading) {
+    <div class="loading">Cargando solicitudes...</div>
+  } @else {
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Solicitante</th>
+            <th>Sala</th>
+            <th>Fecha / Bloque</th>
+            <th>Motivo</th>
+            <th>Personas</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (sol of solicitudes; track sol.id) {
+            <tr [class.fila-pendiente]="sol.estado === 'PENDIENTE'">
+              <td>
+                <div class="usuario-info">
+                  <strong>{{ sol.nombreUsuario }}</strong>
+                  <small>{{ sol.rolUsuario }}</small>
+                </div>
+              </td>
+              <td class="sala-nombre">{{ sol.nombreSala }}</td>
+              <td>
+                <div>{{ sol.fecha | date:'dd/MM/yyyy' }}</div>
+                <small>{{ sol.bloqueInicio.slice(0,5) }} - {{ sol.bloqueFin.slice(0,5) }}</small>
+              </td>
+              <td>{{ sol.motivo }}</td>
+              <td class="text-center">{{ sol.cantidadPersonas }}</td>
+              <td>
+                <span class="badge" [ngClass]="getClassEstado(sol.estado)">
+                  {{ sol.estado }}
+                </span>
+              </td>
+              <td>
+                <!-- BOTONES DE ACCIÓN (Solo si está PENDIENTE o para corregir) -->
+                <div class="acciones">
+                  @if (sol.estado !== 'APROBADA') {
+                    <button class="btn-aprobar" (click)="actualizarEstado(sol.id, 'APROBADA')" title="Aprobar">
+                      ✅
+                    </button>
+                  }
+                  
+                  @if (sol.estado !== 'RECHAZADA') {
+                    <button class="btn-rechazar" (click)="actualizarEstado(sol.id, 'RECHAZADA')" title="Rechazar">
+                      ❌
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -10,7 +10,7 @@
       </select>
     </div>
 
-    <button class="btn-reservar" (click)="abrirFormularioGeneral()">Realizar tu reserva</button>
+    <!-- ELIMINADO: Ya no está el botón "Realizar tu reserva" aquí -->
   </div>
 
   <div class="table-responsive">
@@ -24,19 +24,33 @@
 
       <tbody>
         <tr *ngFor="let bloque of bloques">
+          <!-- Hora formateada -->
           <td class="hora-celda">{{ bloque.inicio.slice(0,5) }} - {{ bloque.fin.slice(0,5) }}</td>
 
           <td *ngFor="let dia of diasSemana">
+            <!-- LOGICA: Si hay reserva... -->
             <ng-container *ngIf="obtenerReserva(dia, bloque.inicio) as reserva; else libre">
-              <div class="card-reserva ocupado" (click)="openInfo(dia, bloque.inicio, reserva)">
+              
+              <!-- Tarjeta Ocupada: Pintamos clase según estado -->
+              <div class="card-reserva" 
+                   [ngClass]="{
+                     'aprobada': reserva.estado === 'APROBADA', 
+                     'pendiente': reserva.estado === 'PENDIENTE',
+                     'rechazada': reserva.estado === 'RECHAZADA'
+                   }"
+                   (click)="openInfo(dia, bloque.inicio, reserva)">
+                
                 <span class="motivo">{{ reserva.motivo }}</span>
-                <small>{{ reserva.estado }}</small>
+                <small class="estado-texto">{{ reserva.estado }}</small>
               </div>
+
             </ng-container>
 
+            <!-- LOGICA: Si está libre... -->
             <ng-template #libre>
               <div class="card-reserva libre">
                 <span>Libre</span>
+                <!-- El botón solo aparece aquí, así que es imposible reservar un bloque ocupado -->
                 <button class="btn-add" (click)="openInfo(dia, bloque.inicio)">+</button>
               </div>
             </ng-template>
@@ -46,11 +60,11 @@
     </table>
   </div>
 
-  <!-- MODAL -->
+  <!-- MODAL (Mantenemos igual que antes) -->
   <div *ngIf="mostrarModal" class="modal-overlay" (click)="closeModal()">
     <div class="modal-card" (click)="$event.stopPropagation()">
       
-      <!-- MODO VER INFO -->
+      <!-- MODO VER INFO (Lectura) -->
       <div *ngIf="!modoCrear">
         <div class="modal-header">
           <h3>Información de Reserva</h3>
@@ -59,7 +73,7 @@
         <div class="modal-body">
           <p><strong>Motivo:</strong> {{ selectedReserva.motivo }}</p>
           <p><strong>Profesor:</strong> {{ selectedReserva.profesor || '—' }}</p>
-          <p><strong>Fecha:</strong> {{ selectedReserva.fecha }}</p>
+          <p><strong>Fecha:</strong> {{ selectedReserva.fecha | date:'dd/MM/yyyy' }}</p>
           <p><strong>Bloque:</strong> {{ selectedReserva.bloqueInicio }}</p>
           <p><strong>Estado:</strong> <span class="badge-estado">{{ selectedReserva.estado }}</span></p>
         </div>
@@ -68,14 +82,13 @@
         </div>
       </div>
 
-      <!-- MODO CREAR RESERVA -->
+      <!-- MODO CREAR RESERVA (Escritura) -->
       <div *ngIf="modoCrear">
         <div class="modal-header">
           <h3>Solicitar Reserva</h3>
           <button class="close-x" (click)="closeModal()">✖</button>
         </div>
 
-        <!-- 1. CAJA DE REGLAS (Amarilla) -->
         <div class="reglas-box">
           <h4>⚠️ Normas de Uso de Sala</h4>
           <ul>
@@ -90,30 +103,16 @@
           </div>
         </div>
 
-        <!-- 2. FORMULARIO -->
         <form class="form-reserva" (ngSubmit)="crearReservaEnviar()">
           
-          <div class="row">
-            <div class="col">
-              <label>Fecha</label>
-              <input type="date" [(ngModel)]="formReserva.fecha" name="fecha" required>
-            </div>
-            <div class="col">
-               <label>Bloque</label>
-               <select [(ngModel)]="formReserva.bloqueInicio" name="bloqueInicio" required>
-                 <option *ngFor="let b of bloques" [value]="b.inicio">
-                   {{ b.inicio.slice(0,5) }} - {{ b.fin.slice(0,5) }}
-                 </option>
-               </select>
-            </div>
+          <!-- Mostramos Fecha y Bloque fijos (bloqueados para editar) -->
+          <div class="info-fija">
+             <p><strong>Fecha:</strong> {{ formReserva.fecha }}</p>
+             <p><strong>Bloque:</strong> {{ formReserva.bloqueInicio }}</p>
           </div>
 
-          <label>Sala</label>
-          <select [(ngModel)]="formReserva.salaId" name="salaId" class="full-width">
-            <option *ngFor="let s of salas" [value]="s.id">{{ s.nombre }}</option>
-          </select>
-
-          <!-- NUEVO CAMPO: CANTIDAD PERSONAS -->
+          <!-- Ocultamos select de sala y bloque porque ya vienen del click en el calendario -->
+          
           <label>Cantidad de Personas</label>
           <input type="number" [(ngModel)]="formReserva.cantidadPersonas" name="cant" min="1" max="50" required>
 
@@ -125,7 +124,6 @@
 
           <div class="modal-footer">
             <button class="btn-cerrar" type="button" (click)="closeModal()">Cancelar</button>
-            <!-- BOTÓN DESHABILITADO SI NO ACEPTA REGLAS -->
             <button class="btn-crear" type="submit" [disabled]="!aceptaReglas">Confirmar Reserva</button>
           </div>
         </form>

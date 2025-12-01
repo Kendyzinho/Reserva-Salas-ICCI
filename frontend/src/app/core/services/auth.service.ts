@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, tap, catchError, throwError, BehaviorSubject } from 'rxjs';
 import { Usuario } from '../models/usuario.model';
 import { Router } from '@angular/router';
 
@@ -10,9 +10,16 @@ import { Router } from '@angular/router';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-
-  // Asegúrate que apunte a tu puerto 3000
   private apiUrl = 'http://localhost:3000/api'; 
+
+  // 1. CREAMOS EL CANAL DE NOTICIAS (BehaviorSubject)
+  // Lo inicializamos leyendo el localStorage para saber si ya hay alguien al entrar
+  private currentUserSubject = new BehaviorSubject<Usuario | null>(
+    JSON.parse(localStorage.getItem('user') || 'null')
+  );
+
+  // 2. EXPONEMOS EL CANAL COMO OBSERVABLE (Para que otros se suscriban)
+  public currentUser$ = this.currentUserSubject.asObservable();
 
   login(email: string, password: string): Observable<Usuario> {
     return this.http.post<Usuario>(`${this.apiUrl}/login`, { email, password })
@@ -20,6 +27,8 @@ export class AuthService {
         tap(user => {
           if (user) {
             localStorage.setItem('user', JSON.stringify(user));
+            // 3. AVISAMOS A TODOS QUE HAY UN NUEVO USUARIO
+            this.currentUserSubject.next(user);
           }
         }),
         catchError(error => {
@@ -31,22 +40,22 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('user');
+    // 4. AVISAMOS A TODOS QUE YA NO HAY USUARIO
+    this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
 
+  // Método auxiliar para obtener el valor actual sin suscribirse (síncrono)
   getUser(): Usuario | null {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+    return this.currentUserSubject.value;
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('user');
+    return !!this.currentUserSubject.value;
   }
 
-  // --- ESTA ES LA FUNCIÓN QUE FALTABA ---
   isAyudante(): boolean {
     const user = this.getUser();
-    // Verifica si el rol es exactamente 'AYUDANTE'
     return user?.rol === 'AYUDANTE';
   }
 }

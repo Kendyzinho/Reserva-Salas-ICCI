@@ -1,0 +1,51 @@
+<div class="admin-container">
+  <h2>🏢 Gestión de Salas</h2>
+  
+  <!-- FORMULARIO CREAR -->
+  <div class="card-crear">
+    <h3>Nueva Sala</h3>
+    <div class="form-inline">
+      <input type="text" [(ngModel)]="nuevaSala.nombre" placeholder="Nombre Sala (ej: Azufre)">
+      <input type="number" [(ngModel)]="nuevaSala.capacidad" placeholder="Capacidad" min="1">
+      <input type="text" [(ngModel)]="nuevaSala.ubicacion" placeholder="Ubicación">
+      <button (click)="crearSala()" [disabled]="loading || !nuevaSala.nombre">
+        {{ loading ? '...' : '+ Agregar' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- LISTA DE SALAS -->
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Capacidad</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (sala of salas; track sala.id) {
+          <tr>
+            <td>{{ sala.id }}</td>
+            <td><strong>{{ sala.nombre }}</strong></td>
+            <td>{{ sala.capacidad }} personas</td>
+            <td>
+              <span class="badge" [class.disponible]="sala.estado === 'DISPONIBLE'" [class.mantencion]="sala.estado === 'MANTENCION'">
+                {{ sala.estado }}
+              </span>
+            </td>
+            <td class="acciones">
+              <button class="btn-estado" (click)="cambiarEstado(sala)">
+                {{ sala.estado === 'DISPONIBLE' ? 'Bloquear 🔒' : 'Habilitar ✅' }}
+              </button>
+              <button class="btn-eliminar" (click)="eliminarSala(sala.id)">🗑️</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

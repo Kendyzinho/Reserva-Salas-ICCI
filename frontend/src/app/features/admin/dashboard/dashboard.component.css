@@ -1,0 +1,43 @@
+.dashboard-container {
+  max-width: 1200px; margin: 40px auto; padding: 0 20px;
+}
+
+h2 { color: #003366; margin-bottom: 5px; }
+.subtitle { color: #666; margin-bottom: 20px; }
+
+.table-responsive {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  overflow-x: auto;
+}
+
+table { width: 100%; border-collapse: collapse; }
+thead { background-color: #f8f9fa; border-bottom: 2px solid #e9ecef; }
+th { text-align: left; padding: 15px; color: #495057; }
+td { padding: 15px; border-bottom: 1px solid #e9ecef; vertical-align: middle; }
+
+/* Resaltar filas pendientes */
+.fila-pendiente { background-color: #fffde7; }
+.fila-pendiente:hover { background-color: #fff9c4; }
+
+.usuario-info { display: flex; flex-direction: column; }
+.sala-nombre { font-weight: bold; color: #003366; }
+.text-center { text-align: center; }
+
+/* Badges */
+.badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+.badge-success { background: #d4edda; color: #155724; }
+.badge-danger { background: #f8d7da; color: #721c24; }
+.badge-warning { background: #fff3cd; color: #856404; }
+
+/* Botones */
+.acciones { display: flex; gap: 5px; }
+button { 
+  border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 1rem;
+}
+.btn-aprobar { background-color: #28a745; color: white; }
+.btn-aprobar:hover { background-color: #218838; }
+
+.btn-rechazar { background-color: #dc3545; color: white; }
+.btn-rechazar:hover { background-color: #c82333; }

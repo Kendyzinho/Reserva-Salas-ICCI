@@ -1,0 +1,49 @@
+<div class="admin-container">
+
+  <h2>Gestión de Reservas</h2>
+
+  <table class="tabla-reservas">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Sala</th>
+        <th>Fecha</th>
+        <th>Bloque</th>
+        <th>Motivo</th>
+        <th>Solicitante</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (reserva of reservas; track reserva.id) {
+        <tr>
+          <td>{{ reserva.id }}</td>
+          <td>{{ reserva.sala }}</td>
+          <td>{{ reserva.fecha }}</td>
+          <td>{{ reserva.bloqueInicio }} - {{ reserva.bloqueFin }}</td>
+          <td>{{ reserva.motivo }}</td>
+          <td>{{ reserva.usuario }}</td>
+
+          <td>
+            <span class="badge" 
+              [ngClass]="{
+                'badge-pendiente': reserva.estado === 'Pendiente',
+                'badge-aprobada': reserva.estado === 'Aprobada',
+                'badge-rechazada': reserva.estado === 'Rechazada'
+              }">
+              {{ reserva.estado }}
+            </span>
+          </td>
+
+          <td>
+            <button class="btn-aprobar" (click)="aprobar(reserva.id)">Aprobar</button>
+            <button class="btn-rechazar" (click)="rechazar(reserva.id)">Rechazar</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+</div>

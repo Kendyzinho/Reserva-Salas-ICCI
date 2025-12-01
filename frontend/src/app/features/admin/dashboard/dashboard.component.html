@@ -1,1 +1,53 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+
+  <!-- CONTENIDO -->
+  <section class="content">
+
+    <div class="profile-card">
+  <img [src]="usuario.avatar" class="profile-avatar">
+
+  <div class="profile-details">
+    <h2 class="profile-name">{{ usuario.nombre }}</h2>
+
+    <span class="profile-role">{{ usuario.rol }}</span>
+
+    <div class="profile-email">
+      <span>📧</span>
+      <p>{{ usuario.email }}</p>
+    </div>
+  </div>
+</div>
+
+    <div class="cards">
+
+      <!-- Card: Solicitudes -->
+      <div class="card">
+        <h3>Solicitudes de Reserva</h3>
+        <p>Revisa, aprueba o rechaza las reservas de salas.</p>
+        <img src="https://source.unsplash.com/random/600x400" class="card-img">
+        <button routerLink="/listado-reservas">Ir al listado</button>
+      </div>
+
+      <!-- Card: Calendario -->
+      <div class="card">
+        <h3>Reservar Sala</h3>
+        <p>Gestiona y programa reservas de salas.</p>
+        <img src="https://via.placeholder.com/400x250" class="card-img">
+        <button routerLink="/calendario">Abrir calendario</button>
+      </div>
+
+      <!-- Card: Reportes -->
+      <!-- Card: Estadísticas -->
+<div class="card">
+  <h3>Estadísticas de Uso</h3>
+  <p>Observa métricas sobre horas utilizadas, frecuencia por sala y tendencias de uso.</p>
+  <img src="https://via.placeholder.com/400x250?text=Estadísticas" class="card-img">
+  <button routerLink="/estadisticas-salas">Ver estadísticas</button>
+</div>
+
+
+    </div>
+
+  </section>
+
+</div>

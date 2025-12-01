@@ -46,23 +46,23 @@ export class CalendarioComponent implements OnInit {
   // Fecha formato YYYY-MM-DD. Asegúrate que las fechas correspondan al día de la semana esperado.
   private mockData: Record<number, any[]> = {
     1: [ // Guallatire
-      { id: 101, motivo: 'Clase: Geología I', profesor: 'Dr. López', asignatura: 'Geología I', fecha: '2025-12-01', bloqueInicio: '08:00:00', estado: 'APROBADA' },
-      { id: 102, motivo: 'Seminario', profesor: 'Sra. Pérez', asignatura: 'Seminarios', fecha: '2025-12-02', bloqueInicio: '09:40:00', estado: 'APROBADA' }
+      { id: 101, tipoReserva: 'Clases', motivo: 'Clase: Geología I', profesor: 'Dr. López', asignatura: 'Geología I', fecha: '2025-12-01', bloqueInicio: '08:00:00', estado: 'APROBADA', salaId: 1 },
+      { id: 102, tipoReserva: 'Clases', motivo: 'Seminario', profesor: 'Sra. Pérez', asignatura: 'Seminarios', fecha: '2025-12-02', bloqueInicio: '09:40:00', estado: 'APROBADA', salaId: 1 }
     ],
     2: [ // Parinacota
-      { id: 201, motivo: 'Taller de Campo', profesor: 'Ing. Ramos', asignatura: 'Práctica', fecha: '2025-12-03', bloqueInicio: '11:20:00', estado: 'APROBADA' }
+      { id: 201, tipoReserva: 'Clases', motivo: 'Taller de Campo', profesor: 'Ing. Ramos', asignatura: 'Práctica', fecha: '2025-12-03', bloqueInicio: '11:20:00', estado: 'APROBADA', salaId: 2 }
     ],
     3: [ // Pomerape
-      { id: 301, motivo: 'Examen', profesor: 'Prof. Díaz', asignatura: 'Matemáticas', fecha: '2025-12-01', bloqueInicio: '14:45:00', estado: 'APROBADA' },
-      { id: 302, motivo: 'Reunión', profesor: 'Coord.', asignatura: 'Admin', fecha: '2025-12-04', bloqueInicio: '16:20:00', estado: 'APROBADA' }
+      { id: 301, tipoReserva: 'Clases', motivo: 'Examen', profesor: 'Prof. Díaz', asignatura: 'Matemáticas', fecha: '2025-12-01', bloqueInicio: '14:45:00', estado: 'APROBADA', salaId: 3 },
+      { id: 302, tipoReserva: 'Particular', motivo: 'Reunión privada', profesor: null, asignatura: null, cantidadPersonas: 5, fecha: '2025-12-04', bloqueInicio: '16:20:00', estado: 'APROBADA', salaId: 3 }
     ],
     4: [], // Socompa (vacío)
     5: [ // Azufre
-      { id: 501, motivo: 'Clase práctica', profesor: 'M. Torres', asignatura: 'Química', fecha: '2025-12-02', bloqueInicio: '08:00:00', estado: 'APROBADA' },
-      { id: 502, motivo: 'Taller', profesor: 'E. Silva', asignatura: 'Taller', fecha: '2025-12-05', bloqueInicio: '18:00:00', estado: 'APROBADA' }
+      { id: 501, tipoReserva: 'Clases', motivo: 'Clase práctica', profesor: 'M. Torres', asignatura: 'Química', fecha: '2025-12-02', bloqueInicio: '08:00:00', estado: 'APROBADA', salaId: 5 },
+      { id: 502, tipoReserva: 'Particular', motivo: 'Taller privado', profesor: null, asignatura: null, cantidadPersonas: 12, fecha: '2025-12-05', bloqueInicio: '18:00:00', estado: 'APROBADA', salaId: 5 }
     ],
     6: [ // Licancabur
-      { id: 601, motivo: 'Conferencia', profesor: 'Invitado', asignatura: 'Divulgación', fecha: '2025-12-03', bloqueInicio: '09:40:00', estado: 'APROBADA' }
+      { id: 601, tipoReserva: 'Clases', motivo: 'Conferencia', profesor: 'Invitado', asignatura: 'Divulgación', fecha: '2025-12-03', bloqueInicio: '09:40:00', estado: 'APROBADA', salaId: 6 }
     ]
   };
 
@@ -72,12 +72,14 @@ export class CalendarioComponent implements OnInit {
   selectedReserva: any = null;
 
   formReserva: any = {
+    tipoReserva: '', // 'Clases' | 'Particular'
     motivo: '',
     profesor: '',
     asignatura: '',
     fecha: '',
     bloqueInicio: '',
-    salaId: 0
+    salaId: 0,
+    cantidadPersonas: null
   };
 
   ngOnInit() {
@@ -133,12 +135,14 @@ export class CalendarioComponent implements OnInit {
     } else {
       this.modoCrear = true;
       this.formReserva = {
+        tipoReserva: 'Clases',
         motivo: '',
         profesor: '',
         asignatura: '',
         fecha: this.diaToFechaString(dia),
         bloqueInicio: bloqueInicio,
-        salaId: this.salaSeleccionada
+        salaId: this.salaSeleccionada,
+        cantidadPersonas: null
       };
     }
     this.mostrarModal = true;
@@ -148,12 +152,14 @@ export class CalendarioComponent implements OnInit {
   abrirFormularioGeneral() {
     this.modoCrear = true;
     this.formReserva = {
+      tipoReserva: 'Clases',
       motivo: '',
       profesor: '',
       asignatura: '',
       fecha: '',
       bloqueInicio: '',
-      salaId: this.salaSeleccionada
+      salaId: this.salaSeleccionada,
+      cantidadPersonas: null
     };
     this.mostrarModal = true;
   }
@@ -179,17 +185,35 @@ export class CalendarioComponent implements OnInit {
 
   // Crear reserva (mock o real)
   crearReservaEnviar() {
-    // Validaciones básicas
+    // Validaciones básicas comunes
     if (!this.formReserva.fecha || !this.formReserva.bloqueInicio || !this.formReserva.motivo) {
       alert('Completa fecha, bloque y motivo.');
       return;
     }
 
+    // Validaciones según tipo
+    if (this.formReserva.tipoReserva === 'Clases') {
+      // profesor y asignatura opcionales, pero podemos advertir si faltan
+      // (si quieres hacerlos obligatorios, cambia la condición)
+      // aquí solo advertimos:
+      if (!this.formReserva.profesor || !this.formReserva.asignatura) {
+        const ok = confirm('No indicó profesor o asignatura. ¿Desea continuar de todas formas?');
+        if (!ok) return;
+      }
+    } else if (this.formReserva.tipoReserva === 'Particular') {
+      if (!this.formReserva.cantidadPersonas || this.formReserva.cantidadPersonas < 1) {
+        alert('Ingrese la cantidad de personas para reservas particulares.');
+        return;
+      }
+    }
+
     const nueva = {
       id: this.generateIdMock(),
+      tipoReserva: this.formReserva.tipoReserva,
       motivo: this.formReserva.motivo,
-      profesor: this.formReserva.profesor,
-      asignatura: this.formReserva.asignatura,
+      profesor: this.formReserva.tipoReserva === 'Clases' ? this.formReserva.profesor : null,
+      asignatura: this.formReserva.tipoReserva === 'Clases' ? this.formReserva.asignatura : null,
+      cantidadPersonas: this.formReserva.tipoReserva === 'Particular' ? this.formReserva.cantidadPersonas : null,
       fecha: this.formReserva.fecha,
       bloqueInicio: this.formReserva.bloqueInicio,
       estado: 'APROBADA',
@@ -205,7 +229,8 @@ export class CalendarioComponent implements OnInit {
       alert('Reserva (mock) creada correctamente.');
       return;
     }
-/*
+
+    /*
     // Si tienes backend
     this.reservasService.crearReserva(nueva).subscribe({
       next: () => {

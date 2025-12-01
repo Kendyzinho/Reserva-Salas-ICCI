@@ -1,9 +1,18 @@
 export interface Reserva {
-  id?: string;
-  usuarioId: string;
-  salaNombre: string; // Simplificado para MVP
+  id: number;
+  salaId: number;
   fecha: string;
-  horario: string;
-  estado: 'PENDIENTE' | 'APROBADA' | 'RECHAZADA';
+  bloque: string;
+
+  tipoReserva: 'Clases' | 'Particular';
+
+  // Solo para Clases:
+  profesor?: string;
+  asignatura?: string;
+
+  // Solo para Particular:
+  cantidadPersonas?: number;
+
+  // Para ambos:
   motivo: string;
 }

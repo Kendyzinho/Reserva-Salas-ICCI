@@ -30,7 +30,9 @@
             <ng-container *ngIf="obtenerReserva(dia, bloque.inicio) as reserva; else libre">
               <div class="card-reserva ocupado" (click)="openInfo(dia, bloque.inicio, reserva)">
                 <span class="motivo">{{ reserva.motivo }}</span>
-                <small>{{ reserva.profesor || '---' }}</small>
+                <small *ngIf="reserva.tipoReserva">{{ reserva.tipoReserva }}</small>
+                <small *ngIf="reserva.profesor"> · {{ reserva.profesor }}</small>
+                <small *ngIf="reserva.cantidadPersonas"> · {{ reserva.cantidadPersonas }} personas</small>
               </div>
             </ng-container>
 
@@ -53,9 +55,11 @@
       <!-- VER RESERVA -->
       <div *ngIf="!modoCrear">
         <h3>Información de la Reserva</h3>
+        <p><strong>Tipo:</strong> {{ selectedReserva.tipoReserva || '—' }}</p>
         <p><strong>Motivo:</strong> {{ selectedReserva.motivo }}</p>
-        <p><strong>Asignatura:</strong> {{ selectedReserva.asignatura || '—' }}</p>
-        <p><strong>Profesor:</strong> {{ selectedReserva.profesor || '—' }}</p>
+        <p *ngIf="selectedReserva.asignatura"><strong>Asignatura:</strong> {{ selectedReserva.asignatura }}</p>
+        <p *ngIf="selectedReserva.profesor"><strong>Profesor:</strong> {{ selectedReserva.profesor }}</p>
+        <p *ngIf="selectedReserva.cantidadPersonas"><strong>Cantidad de personas:</strong> {{ selectedReserva.cantidadPersonas }}</p>
         <p><strong>Día:</strong> {{ selectedReserva.fecha }}</p>
         <p><strong>Bloque:</strong> {{ selectedReserva.bloqueInicio }}</p>
         <p><strong>Estado:</strong> {{ selectedReserva.estado }}</p>
@@ -68,14 +72,28 @@
         <h3>Crear Reserva</h3>
 
         <form class="form-reserva" (ngSubmit)="crearReservaEnviar()">
-          <label>Motivo</label>
-          <input type="text" [(ngModel)]="formReserva.motivo" name="motivo" required>
+          <label>Tipo de reserva</label>
+          <select [(ngModel)]="formReserva.tipoReserva" name="tipoReserva">
+            <option value="Clases">Clases</option>
+            <option value="Particular">Particular</option>
+          </select>
 
-          <label>Profesor</label>
-          <input type="text" [(ngModel)]="formReserva.profesor" name="profesor">
+          <label>Descripción (motivo)</label>
+          <textarea rows="3" [(ngModel)]="formReserva.motivo" name="motivo" required></textarea>
 
-          <label>Asignatura</label>
-          <input type="text" [(ngModel)]="formReserva.asignatura" name="asignatura">
+          <!-- SOLO PARA CLASES -->
+          <div *ngIf="formReserva.tipoReserva === 'Clases'">
+            <label>Profesor</label>
+            <input type="text" [(ngModel)]="formReserva.profesor" name="profesor">
+
+          </div>
+          <div *ngIf="formReserva.tipoReserva === 'Clases'"><label>Asignatura</label>
+            <input type="text" [(ngModel)]="formReserva.asignatura" name="asignatura"></div>
+          <!-- SOLO PARA PARTICULAR -->
+          <div *ngIf="formReserva.tipoReserva === 'Particular'">
+            <label>Cantidad de Personas</label>
+            <input type="number" min="1" [(ngModel)]="formReserva.cantidadPersonas" name="cantidadPersonas">
+          </div>
 
           <label>Fecha</label>
           <input type="date" [(ngModel)]="formReserva.fecha" name="fecha" [value]="formReserva.fecha" required>

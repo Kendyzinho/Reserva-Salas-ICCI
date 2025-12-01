@@ -1,0 +1,68 @@
+.admin-container {
+  padding: 20px;
+}
+
+h2 {
+  margin-bottom: 15px;
+  font-size: 1.6rem;
+}
+
+.tabla-reservas {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+th {
+  background-color: #0056b3;
+  color: white;
+  padding: 12px;
+}
+
+td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.badge-pendiente {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-aprobada {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-rechazada {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.btn-aprobar {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  margin-right: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-rechazar {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}

@@ -1,26 +1,38 @@
 <nav class="navbar-container">
-  <div class="logo-container">
-    <img 
-  src="images/logoweb_UTA.png" 
-  alt="Logo UTA" 
-  class="logo-img"
-    >
+  
+  <div class="logo-container" routerLink="/">
+    <img src="images/logoweb_UTA.png" alt="Logo UTA" class="logo-img">
     <div class="brand-text">
       <h1>Reserva de Salas</h1>
       <span>Universidad de Tarapacá</span>
     </div>
   </div>
 
-  @if (isLoggedIn && usuario) {
-    <div class="user-controls">
-      <div class="user-info">
-        <span class="user-name">{{ usuario.nombre }}</span>
-        <span class="user-role badge">{{ usuario.rol }}</span>
-      </div>
+  @if (true) {
+    <div class="user-container">
       
-      <button (click)="onLogout()" class="btn-logout">
-        Cerrar Sesión
-      </button>
+      <div class="user-trigger" (click)="toggleMenu()">
+        <span class="user-name">{{ usuario?.nombre || 'Usuario Prueba' }}</span>
+        <span class="user-role badge">{{ usuario?.rol || 'ESTUDIANTE' }}</span>
+        <span class="arrow">▼</span>
+      </div>
+
+      @if (menuAbierto) {
+        <div class="dropdown-menu">
+          <a (click)="abrirPerfil()" class="dropdown-item">👤 Mi Perfil</a>
+          <a routerLink="/mis-reservas" (click)="toggleMenu()" class="dropdown-item">📅 Mis Reservas</a>
+          <hr class="divider">
+          <button (click)="onLogout()" class="dropdown-item logout-btn">🚪 Cerrar Sesión</button>
+        </div>
+      }
     </div>
   }
+
+  @if (mostrarModalPerfil) {
+    <app-perfil-modal 
+      [usuario]="usuario" 
+      (cerrar)="cerrarPerfil()">
+    </app-perfil-modal>
+  }
+
 </nav>

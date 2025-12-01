@@ -1,0 +1,62 @@
+<div class="modal-overlay" (click)="onCerrar()">
+  
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h2>Mi Perfil</h2>
+      <button class="close-btn" (click)="onCerrar()">✖</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="avatar-section">
+        <div class="avatar-circle">
+          {{ usuario?.nombre?.charAt(0) }}
+        </div>
+        <h3>{{ usuario?.nombre }} {{ usuario?.apellidos }}</h3>
+        <span class="badge">{{ usuario?.rol }}</span>
+      </div>
+
+      <hr>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <label>RUT</label>
+          <span>{{ usuario?.rut || 'No registrado' }}</span>
+        </div>
+        <div class="info-item">
+          <label>Carrera</label>
+          <span>{{ usuario?.carrera || 'Ingeniería Civil en Computación' }}</span>
+        </div>
+        <div class="info-item">
+          <label>Correo Institucional</label>
+          <span>{{ usuario?.email }}</span>
+        </div>
+        <div class="info-item">
+          <label>Teléfono</label>
+          <span>{{ usuario?.telefono || '+56 9 ...' }}</span>
+        </div>
+        <div class="info-item">
+          <label>Fecha Nacimiento</label>
+          <span>{{ usuario?.fechaNacimiento || '--/--/----' }}</span>
+        </div>
+        <div class="info-item">
+          <label>Género</label>
+          <span>{{ usuario?.genero || 'No especificado' }}</span>
+        </div>
+        <div class="info-item">
+          <label>Pueblo Originario</label>
+          <span>{{ usuario?.puebloOriginario ? 'Sí' : 'No' }}</span>
+        </div>
+        <div class="info-item">
+          <label>Discapacidad</label>
+          <span>{{ usuario?.discapacidad ? 'Sí' : 'No' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-primary" (click)="onCerrar()">Cerrar</button>
+    </div>
+
+  </div>
+</div>

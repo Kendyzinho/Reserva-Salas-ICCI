@@ -3,11 +3,13 @@
   background-color: #003366; /* Azul UTA */
   color: white;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 1000; /* Para asegurar que esté encima de todo */
 }
 
 .navbar-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Esto empuja el usuario a la derecha total */
   align-items: center;
   height: 70px;
   max-width: 1200px;
@@ -15,11 +17,12 @@
   padding: 0 20px;
 }
 
-/* Logo y Texto */
+/* Logo (con cursor pointer para volver al inicio) */
 .logo-container {
   display: flex;
   align-items: center;
   gap: 15px;
+  cursor: pointer;
 }
 
 .logo-img {
@@ -28,57 +31,99 @@
   filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
 }
 
-.brand-text h1 {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: bold;
+.brand-text h1 { margin: 0; font-size: 1.2rem; font-weight: bold; }
+.brand-text span { font-size: 0.8rem; opacity: 0.8; display: block; }
+
+/* --- ZONA DEL USUARIO --- */
+.user-container {
+  position: relative; /* Necesario para que el dropdown se posicione respecto a esto */
 }
 
-.brand-text span {
-  font-size: 0.8rem;
-  opacity: 0.8;
-  display: block;
-}
-
-/* Panel Usuario */
-.user-controls {
+.user-trigger {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 8px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background 0.3s;
 }
 
-.user-info {
-  text-align: right;
-  line-height: 1.2;
+.user-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .user-name {
-  display: block;
   font-weight: 600;
+  font-size: 1rem;
+}
+
+.arrow {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* --- MENÚ DESPLEGABLE (DROPDOWN) --- */
+.dropdown-menu {
+  position: absolute;
+  top: 100%; /* Justo debajo del nombre */
+  right: 0;   /* Alineado a la derecha */
+  width: 200px;
+  background-color: white;
+  color: #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  padding: 10px 0;
+  margin-top: 10px; /* Un pequeño espacio */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Triangulito decorativo arriba del menú (Opcional) */
+.dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 20px;
+  width: 12px;
+  height: 12px;
+  background: white;
+  transform: rotate(45deg);
+}
+
+.dropdown-item {
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #333;
   font-size: 0.95rem;
-}
-
-.user-role.badge {
-  background-color: #ffcc00; /* Amarillo UTA */
-  color: #003366;
-  font-size: 0.7rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.btn-logout {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 8px 15px;
-  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
   cursor: pointer;
-  transition: 0.3s;
+  box-sizing: border-box;
 }
 
-.btn-logout:hover {
-  background: #dc3545;
-  border-color: #dc3545;
+.dropdown-item:hover {
+  background-color: #f4f6f8;
+  color: #003366;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 5px 0;
+}
+
+.logout-btn {
+  color: #dc3545; /* Rojo para cerrar sesión */
+}
+
+.logout-btn:hover {
+  background-color: #ffebee;
+  color: #c62828;
 }

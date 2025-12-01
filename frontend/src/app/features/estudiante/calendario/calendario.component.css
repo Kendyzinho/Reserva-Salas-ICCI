@@ -9,35 +9,36 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-.filtro-sala { display:flex; align-items:center; gap:8px; }
+.filtro-sala label {
+  font-weight: bold;
+  margin-right: 10px;
+}
 
-select {
+.filtro-sala select {
   padding: 8px;
   font-size: 1rem;
-  border-radius: 5px;
+  border-radius: 4px;
   border: 1px solid #ccc;
 }
 
-/* Botón reservar */
 .btn-reservar {
-  background: #0056b3;
+  background-color: #003366;
   color: white;
+  padding: 10px 20px;
   border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
-  transition: 0.2s;
 }
-.btn-reservar:hover { transform: translateY(-2px); }
 
-/* Tabla */
+/* TABLA */
 .table-responsive {
   overflow-x: auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   border-radius: 8px;
 }
 
@@ -51,60 +52,56 @@ th, td {
   border: 1px solid #eee;
   padding: 10px;
   text-align: center;
-  vertical-align: middle;
+  vertical-align: top;
 }
 
 th {
-  background-color: #0056b3;
+  background-color: #003366;
   color: white;
   padding: 12px;
 }
 
 .hora-celda {
-  background-color: #f9f9f9;
+  background-color: #f8f9fa;
   font-weight: bold;
   color: #555;
-  width: 150px;
+  white-space: nowrap;
 }
 
-/* Celdas */
+/* TARJETAS DENTRO DE CELDA */
 .card-reserva {
   border-radius: 4px;
-  padding: 8px;
+  padding: 5px;
   font-size: 0.85rem;
   min-height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.card-reserva:hover {
+  transform: scale(1.02);
 }
 
 .card-reserva.ocupado {
   background-color: #ffebee;
+  border-left: 4px solid #c62828;
   color: #c62828;
-  border-left: 3px solid #c62828;
-  cursor: pointer;
 }
 
 .card-reserva.libre {
   background-color: #e8f5e9;
+  border: 1px dashed #a5d6a7;
   color: #2e7d32;
-  opacity: 0.9;
-  transition: 0.2s;
-  display:flex;
-  gap:8px;
-  align-items:center;
-  justify-content:center;
+  opacity: 0.7;
 }
 
 .card-reserva.libre:hover {
-  transform: scale(1.02);
-}
-
-.motivo {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 4px;
+  opacity: 1;
+  background-color: #c8e6c9;
 }
 
 .btn-add {
@@ -112,12 +109,15 @@ th {
   color: white;
   border: none;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  line-height: 1;
   margin-top: 5px;
   cursor: pointer;
 }
 
+<<<<<<< HEAD
 /* Tipo de reserva pequeño */
 .card-reserva small {
   display: block;
@@ -126,30 +126,51 @@ th {
 }
 
 /* Modal */
+=======
+/* MODAL */
+>>>>>>> origin/Reserva
 .modal-overlay {
   position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
 }
 
 .modal-card {
   background: white;
-  padding: 18px;
+  width: 90%;
+  max-width: 500px;
   border-radius: 8px;
+<<<<<<< HEAD
   width: 420px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+=======
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  overflow: hidden;
+  animation: slideIn 0.3s ease;
+>>>>>>> origin/Reserva
 }
 
-.form-reserva {
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  background: #003366;
+  color: white;
+  padding: 15px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
 }
 
+<<<<<<< HEAD
 .form-reserva input,
 .form-reserva select,
 .form-reserva textarea {
@@ -162,21 +183,86 @@ th {
 .form-reserva textarea {
   resize: vertical;
   min-height: 70px;
+=======
+.modal-header h3 { margin: 0; font-size: 1.2rem; }
+.close-x { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+
+.modal-body { padding: 20px; }
+
+/* REGLAS BOX */
+.reglas-box {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 15px;
+  margin: 15px;
+  border-radius: 6px;
+  border: 1px solid #ffeeba;
+  font-size: 0.9rem;
+}
+
+.reglas-box h4 { margin-top: 0; margin-bottom: 8px; }
+.reglas-box ul { padding-left: 20px; margin-bottom: 10px; }
+.reglas-box li { margin-bottom: 4px; }
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* FORMULARIO */
+.form-reserva { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 12px; }
+
+.row { display: flex; gap: 15px; }
+.col { flex: 1; }
+
+label { font-weight: 600; font-size: 0.9rem; color: #444; display: block; margin-bottom: 4px; }
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+>>>>>>> origin/Reserva
 }
 
 .btn-crear {
-  background: #2e7d32;
+  background-color: #28a745;
   color: white;
+  padding: 10px 20px;
   border: none;
-  padding: 10px;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
+  font-weight: bold;
 }
+
+.btn-crear:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 .btn-cerrar {
-  background: #c62828;
+  background-color: #6c757d;
   color: white;
+  padding: 10px 20px;
   border: none;
-  padding: 8px 10px;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
 }

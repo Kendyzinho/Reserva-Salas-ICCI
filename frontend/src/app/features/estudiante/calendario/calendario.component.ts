@@ -2,6 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReservasService } from '../../../core/services/reservas.service';
+// 1. IMPORTAR AUTH SERVICE
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-calendario',
@@ -11,24 +13,15 @@ import { ReservasService } from '../../../core/services/reservas.service';
   styleUrl: './calendario.component.css'
 })
 export class CalendarioComponent implements OnInit {
-  // Inyecta el servicio (si lo tienes)
   private reservasService = inject(ReservasService);
+  // 2. INYECTAR AUTH SERVICE
+  private authService = inject(AuthService);
 
   // ---------- CONFIG ----------
-  // Si quieres probar sin backend, deja true. Para usar backend, pon false.
-  usarMock: boolean = true;
+  usarMock: boolean = false;
 
-  // Salas fijas (según pediste)
-  salas = [
-    { id: 1, nombre: 'Guallatire' },
-    { id: 2, nombre: 'Parinacota' },
-    { id: 3, nombre: 'Pomerape' },
-    { id: 4, nombre: 'Socompa' },
-    { id: 5, nombre: 'Azufre' },
-    { id: 6, nombre: 'Licancabur' }
-  ];
-
-  salaSeleccionada: number = 1;
+  salas: any[] = [];
+  salaSeleccionada: number = 0;
   reservas: any[] = [];
 
   diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
@@ -42,6 +35,7 @@ export class CalendarioComponent implements OnInit {
     { bloque: 6, inicio: '18:00:00', fin: '19:30:00' }
   ];
 
+<<<<<<< HEAD
   // ---------- MOCK DATA (simula calendarios diferentes por sala) ----------
   // Fecha formato YYYY-MM-DD. Asegúrate que las fechas correspondan al día de la semana esperado.
   private mockData: Record<number, any[]> = {
@@ -67,9 +61,16 @@ export class CalendarioComponent implements OnInit {
   };
 
   // ---------- Modal / Form ----------
+=======
+  // Variables del Modal
+>>>>>>> origin/Reserva
   mostrarModal: boolean = false;
-  modoCrear: boolean = true; // true = formulario, false = ver reserva
+  modoCrear: boolean = true;
   selectedReserva: any = null;
+  aceptaReglas: boolean = false;
+
+  // Mock Data (Vacío porque usas Backend)
+  private mockData: Record<number, any[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
 
   formReserva: any = {
     tipoReserva: '', // 'Clases' | 'Particular'
@@ -79,56 +80,67 @@ export class CalendarioComponent implements OnInit {
     fecha: '',
     bloqueInicio: '',
     salaId: 0,
+<<<<<<< HEAD
     cantidadPersonas: null
+=======
+    cantidadPersonas: 1
+>>>>>>> origin/Reserva
   };
 
   ngOnInit() {
-    // Inicializa con la salaSeleccionada por defecto
-    this.cargarReservas();
+    this.cargarSalas();
   }
 
-  // Cambia sala -> recarga calendario para esa sala
+  cargarSalas() {
+    this.reservasService.getSalas().subscribe({
+      next: (data: any[]) => {
+        this.salas = data;
+        if (this.salas.length > 0) {
+          this.salaSeleccionada = this.salas[0].id;
+          this.cargarReservas();
+        }
+      },
+      error: (err) => console.error('Error al cargar salas:', err)
+    });
+  }
+
   onCambioSala() {
     this.cargarReservas();
   }
 
-  // Cargar reservas: si usarMock true, usa mockData; si false, llama al servicio
   cargarReservas() {
     if (this.usarMock) {
-      // Clone para evitar mutaciones accidentales
-      this.reservas = (this.mockData[this.salaSeleccionada] || []).map(r => ({ ...r }));
-      return;
+       this.reservas = (this.mockData[this.salaSeleccionada] || []).map(r => ({ ...r }));
+       return;
     }
 
-    // Si tienes servicio real
+    if (!this.salaSeleccionada) return;
+
     this.reservasService.getReservasPorSala(this.salaSeleccionada)
       .subscribe({
         next: (data: any[]) => { this.reservas = data; },
-        error: (err) => { console.error('Error cargando reservas:', err); this.reservas = []; }
+        error: (err: any) => { console.error('Error cargando reservas:', err); this.reservas = []; }
       });
   }
 
-  // Buscar reserva por día (nombre) y bloqueInicio (string HH:MM:SS)
   obtenerReserva(diaColumna: string, bloqueInicio: string) {
     return this.reservas.find((r: any) => {
-      // Acepta fechas con o sin 'T'
       const fechaString = r.fecha.includes('T') ? r.fecha : `${r.fecha}T00:00:00`;
       const fechaReserva = new Date(fechaString);
       const diaReserva = this.getDiaNombre(fechaReserva);
 
-      return diaReserva === diaColumna && r.bloqueInicio === bloqueInicio;
+      return diaReserva === diaColumna && r.bloqueInicio.slice(0,5) === bloqueInicio.slice(0,5);
     });
   }
 
-  // Convierte Date.getDay() a nombre en español
   getDiaNombre(fecha: Date): string {
     const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     return dias[fecha.getDay()];
   }
 
-  // ---------- INTERACCIONES: modal, ver y crear ----------
-  // Abrir modal para ver reserva o crear (si reservaReal existe, mostramos info)
   openInfo(dia: string, bloqueInicio: string, reservaReal?: any) {
+    this.aceptaReglas = false; 
+    
     if (reservaReal) {
       this.modoCrear = false;
       this.selectedReserva = reservaReal;
@@ -142,14 +154,18 @@ export class CalendarioComponent implements OnInit {
         fecha: this.diaToFechaString(dia),
         bloqueInicio: bloqueInicio,
         salaId: this.salaSeleccionada,
+<<<<<<< HEAD
         cantidadPersonas: null
+=======
+        cantidadPersonas: 1
+>>>>>>> origin/Reserva
       };
     }
     this.mostrarModal = true;
   }
 
-  // Abrir formulario general (botón)
   abrirFormularioGeneral() {
+    this.aceptaReglas = false;
     this.modoCrear = true;
     this.formReserva = {
       tipoReserva: 'Clases',
@@ -159,35 +175,49 @@ export class CalendarioComponent implements OnInit {
       fecha: '',
       bloqueInicio: '',
       salaId: this.salaSeleccionada,
+<<<<<<< HEAD
       cantidadPersonas: null
+=======
+      cantidadPersonas: 1
+>>>>>>> origin/Reserva
     };
     this.mostrarModal = true;
   }
 
-  // Convierte nombre de día (Lunes...) a una fecha de referencia de la semana actual
-  // Esto es aproximado: toma la próxima fecha que corresponda al día solicitado.
   diaToFechaString(diaNombre: string): string {
     const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     const target = dias.indexOf(diaNombre);
     const hoy = new Date();
     const hoyDia = hoy.getDay();
-    // calcular diferencia en días hacia el target en la misma semana (puede ser negativa)
     let diff = target - hoyDia;
-    if (diff < 0) diff += 7; // siguiente semana si fue antes
+    if (diff < 0) diff += 7;
     const result = new Date(hoy);
     result.setDate(hoy.getDate() + diff);
-    // Formato YYYY-MM-DD
     const yyyy = result.getFullYear();
     const mm = (result.getMonth() + 1).toString().padStart(2, '0');
     const dd = result.getDate().toString().padStart(2, '0');
     return `${yyyy}-${mm}-${dd}`;
   }
 
-  // Crear reserva (mock o real)
   crearReservaEnviar() {
+<<<<<<< HEAD
     // Validaciones básicas comunes
+=======
+    if (this.modoCrear && !this.aceptaReglas) {
+        alert('Debes aceptar las normas de uso.');
+        return;
+    }
+>>>>>>> origin/Reserva
     if (!this.formReserva.fecha || !this.formReserva.bloqueInicio || !this.formReserva.motivo) {
-      alert('Completa fecha, bloque y motivo.');
+      alert('Completa los campos obligatorios.');
+      return;
+    }
+
+    // 3. OBTENER EL USUARIO REAL DE LA SESIÓN
+    const usuarioLogueado = this.authService.getUser();
+    
+    if (!usuarioLogueado) {
+      alert('Error: No estás logueado.');
       return;
     }
 
@@ -208,49 +238,51 @@ export class CalendarioComponent implements OnInit {
     }
 
     const nueva = {
+<<<<<<< HEAD
       id: this.generateIdMock(),
       tipoReserva: this.formReserva.tipoReserva,
       motivo: this.formReserva.motivo,
       profesor: this.formReserva.tipoReserva === 'Clases' ? this.formReserva.profesor : null,
       asignatura: this.formReserva.tipoReserva === 'Clases' ? this.formReserva.asignatura : null,
       cantidadPersonas: this.formReserva.tipoReserva === 'Particular' ? this.formReserva.cantidadPersonas : null,
+=======
+      // 4. USAR EL ID DEL USUARIO LOGUEADO
+      usuarioId: usuarioLogueado.id, 
+      salaId: Number(this.formReserva.salaId),
+>>>>>>> origin/Reserva
       fecha: this.formReserva.fecha,
       bloqueInicio: this.formReserva.bloqueInicio,
-      estado: 'APROBADA',
-      salaId: this.formReserva.salaId
+      bloqueFin: this.calcularFin(this.formReserva.bloqueInicio),
+      motivo: this.formReserva.motivo,
+      cantidadPersonas: this.formReserva.cantidadPersonas
     };
 
     if (this.usarMock) {
-      // Insertar en mockData y recargar vistas
-      if (!this.mockData[this.salaSeleccionada]) this.mockData[this.salaSeleccionada] = [];
-      this.mockData[this.salaSeleccionada].push(nueva);
-      this.cargarReservas();
-      this.mostrarModal = false;
-      alert('Reserva (mock) creada correctamente.');
-      return;
+        // mock logic
+        return;
     }
 
+<<<<<<< HEAD
     /*
     // Si tienes backend
+=======
+>>>>>>> origin/Reserva
     this.reservasService.crearReserva(nueva).subscribe({
       next: () => {
+        alert('Solicitud enviada con éxito.');
         this.cargarReservas();
         this.mostrarModal = false;
-        alert('Reserva creada correctamente.');
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error(err);
         alert('Error al crear reserva.');
       }
     });
-    */
   }
 
-  // Genera un id mock simple (no colisionará en pruebas locales típicas)
-  private generateIdMock(): number {
-    const all = Object.values(this.mockData).flat();
-    const max = all.length ? Math.max(...all.map((x: any) => x.id || 0)) : 100;
-    return max + 1;
+  calcularFin(inicio: string): string {
+    const b = this.bloques.find(x => x.inicio === inicio);
+    return b ? b.fin : inicio; 
   }
 
   closeModal() {

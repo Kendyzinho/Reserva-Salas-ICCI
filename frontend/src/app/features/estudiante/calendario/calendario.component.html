@@ -1,4 +1,5 @@
 <div class="calendario-container">
+  
   <div class="header-control">
     <h2>Disponibilidad Semanal</h2>
 
@@ -26,17 +27,19 @@
           <td class="hora-celda">{{ bloque.inicio.slice(0,5) }} - {{ bloque.fin.slice(0,5) }}</td>
 
           <td *ngFor="let dia of diasSemana">
-            <!-- Si hay reserva real para este dia y bloque -->
             <ng-container *ngIf="obtenerReserva(dia, bloque.inicio) as reserva; else libre">
               <div class="card-reserva ocupado" (click)="openInfo(dia, bloque.inicio, reserva)">
                 <span class="motivo">{{ reserva.motivo }}</span>
+<<<<<<< HEAD
                 <small *ngIf="reserva.tipoReserva">{{ reserva.tipoReserva }}</small>
                 <small *ngIf="reserva.profesor"> · {{ reserva.profesor }}</small>
                 <small *ngIf="reserva.cantidadPersonas"> · {{ reserva.cantidadPersonas }} personas</small>
+=======
+                <small>{{ reserva.estado }}</small>
+>>>>>>> origin/Reserva
               </div>
             </ng-container>
 
-            <!-- Celda libre -->
             <ng-template #libre>
               <div class="card-reserva libre">
                 <span>Libre</span>
@@ -52,8 +55,10 @@
   <!-- MODAL -->
   <div *ngIf="mostrarModal" class="modal-overlay" (click)="closeModal()">
     <div class="modal-card" (click)="$event.stopPropagation()">
-      <!-- VER RESERVA -->
+      
+      <!-- MODO VER INFO -->
       <div *ngIf="!modoCrear">
+<<<<<<< HEAD
         <h3>Información de la Reserva</h3>
         <p><strong>Tipo:</strong> {{ selectedReserva.tipoReserva || '—' }}</p>
         <p><strong>Motivo:</strong> {{ selectedReserva.motivo }}</p>
@@ -65,13 +70,49 @@
         <p><strong>Estado:</strong> {{ selectedReserva.estado }}</p>
 
         <button class="btn-cerrar" (click)="closeModal()">Cerrar</button>
+=======
+        <div class="modal-header">
+          <h3>Información de Reserva</h3>
+          <button class="close-x" (click)="closeModal()">✖</button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Motivo:</strong> {{ selectedReserva.motivo }}</p>
+          <p><strong>Profesor:</strong> {{ selectedReserva.profesor || '—' }}</p>
+          <p><strong>Fecha:</strong> {{ selectedReserva.fecha }}</p>
+          <p><strong>Bloque:</strong> {{ selectedReserva.bloqueInicio }}</p>
+          <p><strong>Estado:</strong> <span class="badge-estado">{{ selectedReserva.estado }}</span></p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cerrar" (click)="closeModal()">Cerrar</button>
+        </div>
+>>>>>>> origin/Reserva
       </div>
 
-      <!-- CREAR / FORM -->
+      <!-- MODO CREAR RESERVA -->
       <div *ngIf="modoCrear">
-        <h3>Crear Reserva</h3>
+        <div class="modal-header">
+          <h3>Solicitar Reserva</h3>
+          <button class="close-x" (click)="closeModal()">✖</button>
+        </div>
 
+        <!-- 1. CAJA DE REGLAS (Amarilla) -->
+        <div class="reglas-box">
+          <h4>⚠️ Normas de Uso de Sala</h4>
+          <ul>
+            <li>🚫 Prohibido consumir alimentos y bebidas.</li>
+            <li>🔇 Mantener el orden y ruido moderado.</li>
+            <li>🔌 Apagar equipos (aire/proyector) al salir.</li>
+            <li>⏰ Respetar estrictamente el horario.</li>
+          </ul>
+          <div class="checkbox-container">
+            <input type="checkbox" id="checkReglas" [(ngModel)]="aceptaReglas">
+            <label for="checkReglas">He leído y acepto las normas de uso.</label>
+          </div>
+        </div>
+
+        <!-- 2. FORMULARIO -->
         <form class="form-reserva" (ngSubmit)="crearReservaEnviar()">
+<<<<<<< HEAD
           <label>Tipo de reserva</label>
           <select [(ngModel)]="formReserva.tipoReserva" name="tipoReserva">
             <option value="Clases">Clases</option>
@@ -103,15 +144,43 @@
             <option value="" disabled>Selecciona bloque</option>
             <option *ngFor="let b of bloques" [value]="b.inicio">{{ b.inicio.slice(0,5) }} - {{ b.fin.slice(0,5) }}</option>
           </select>
+=======
+          
+          <div class="row">
+            <div class="col">
+              <label>Fecha</label>
+              <input type="date" [(ngModel)]="formReserva.fecha" name="fecha" required>
+            </div>
+            <div class="col">
+               <label>Bloque</label>
+               <select [(ngModel)]="formReserva.bloqueInicio" name="bloqueInicio" required>
+                 <option *ngFor="let b of bloques" [value]="b.inicio">
+                   {{ b.inicio.slice(0,5) }} - {{ b.fin.slice(0,5) }}
+                 </option>
+               </select>
+            </div>
+          </div>
+>>>>>>> origin/Reserva
 
           <label>Sala</label>
-          <select [(ngModel)]="formReserva.salaId" name="salaId">
+          <select [(ngModel)]="formReserva.salaId" name="salaId" class="full-width">
             <option *ngFor="let s of salas" [value]="s.id">{{ s.nombre }}</option>
           </select>
 
-          <div style="display:flex;gap:8px;margin-top:10px;">
-            <button class="btn-crear" type="button" (click)="crearReservaEnviar()">Crear Reserva</button>
+          <!-- NUEVO CAMPO: CANTIDAD PERSONAS -->
+          <label>Cantidad de Personas</label>
+          <input type="number" [(ngModel)]="formReserva.cantidadPersonas" name="cant" min="1" max="50" required>
+
+          <label>Motivo de la reserva</label>
+          <textarea [(ngModel)]="formReserva.motivo" name="motivo" rows="2" placeholder="Ej: Clase de recuperación..." required></textarea>
+
+          <label>Profesor / Encargado</label>
+          <input type="text" [(ngModel)]="formReserva.profesor" name="profesor">
+
+          <div class="modal-footer">
             <button class="btn-cerrar" type="button" (click)="closeModal()">Cancelar</button>
+            <!-- BOTÓN DESHABILITADO SI NO ACEPTA REGLAS -->
+            <button class="btn-crear" type="submit" [disabled]="!aceptaReglas">Confirmar Reserva</button>
           </div>
         </form>
       </div>

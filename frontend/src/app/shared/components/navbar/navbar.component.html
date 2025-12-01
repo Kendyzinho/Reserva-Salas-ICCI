@@ -8,12 +8,12 @@
     </div>
   </div>
 
-  @if (true) {
+  @if (isLoggedIn && usuario) {
     <div class="user-container">
       
       <div class="user-trigger" (click)="toggleMenu()">
-        <span class="user-name">{{ usuario?.nombre || 'Usuario Prueba' }}</span>
-        <span class="user-role badge">{{ usuario?.rol || 'ESTUDIANTE' }}</span>
+        <span class="user-name">{{ usuario.nombre || 'Usuario Prueba' }}</span>
+        <span class="user-role badge">{{ usuario.rol || 'ESTUDIANTE' }}</span>
         <span class="arrow">▼</span>
       </div>
 

@@ -87,3 +87,33 @@ app.get('/api/reservas', (req, res) => {
         res.json(result);
     });
 });
+
+// 3. CREAR NUEVA RESERVA
+app.post('/api/reservas', (req, res) => {
+    // Recibimos los datos del Angular
+    const { usuarioId, salaId, fecha, bloqueInicio, bloqueFin, motivo, cantidadPersonas } = req.body;
+
+    // Validación básica
+    if (!usuarioId || !salaId || !fecha || !bloqueInicio || !bloqueFin) {
+        return res.status(400).json({ message: 'Faltan datos obligatorios' });
+    }
+
+    // SQL INSERT: Fíjate que en 'estado' ponemos 'PENDIENTE' directamente
+    const sql = `
+        INSERT INTO reservas 
+        (usuario_id, sala_id, fecha, bloque_inicio, bloque_fin, motivo, cantidad_personas, estado) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'PENDIENTE')
+    `;
+
+    const values = [usuarioId, salaId, fecha, bloqueInicio, bloqueFin, motivo, cantidadPersonas];
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error al insertar reserva:', err);
+            return res.status(500).json({ message: 'Error en base de datos', error: err });
+        }
+        
+        // Respondemos éxito y devolvemos el ID creado
+        res.status(201).json({ message: 'Reserva creada con éxito', id: result.insertId });
+    });
+});

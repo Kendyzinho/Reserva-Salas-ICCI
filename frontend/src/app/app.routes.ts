@@ -3,22 +3,37 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { MisReservasComponent } from './features/estudiante/mis-reservas/mis-reservas.component';
 import { CrearReservaComponent } from './features/estudiante/crear-reserva/crear-reserva.component';
 import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
-import { CalendarioComponent } from './features/estudiante/calendario/calendario.component'; 
-import { HomeComponent } from './features/home/home.component';
+import { CalendarioComponent } from './features/estudiante/calendario/calendario.component';
+
+// Importamos los guardias de seguridad
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
-  // 1. REGLA DE ORO: Si entro a la raíz, mándame al calendario
-  { path: '', redirectTo: 'calendario', pathMatch: 'full' },
-
-  // 2. Ruta directa del calendario (SIN GUARDS NI NADA)
-  { path: 'calendario', component: CalendarioComponent },
-{ path: 'home', component: HomeComponent },
-  // 3. El resto de rutas
+  // 1. RUTA PÚBLICA (La única a la que se puede entrar sin llave)
   { path: 'login', component: LoginComponent },
-  { path: 'mis-reservas', component: MisReservasComponent },
-  { path: 'crear-reserva', component: CrearReservaComponent },
-  { path: 'admin', component: DashboardComponent },
-  
-  // 4. Si escribo cualquier disparate, mándame al calendario también (para probar)
-  { path: '**', redirectTo: 'calendario' }
+
+  // 2. RUTAS PRIVADAS (Protegidas por authGuard)
+  {
+    path: '',
+    canActivate: [authGuard], // <--- ESTO ES LO QUE "CIERRA LA SESIÓN" REALMENTE
+    children: [
+      // Si entran a la raiz '/', los mandamos al calendario (Dashboard principal)
+      { path: '', redirectTo: 'calendario', pathMatch: 'full' },
+      
+      { path: 'calendario', component: CalendarioComponent },
+      { path: 'mis-reservas', component: MisReservasComponent },
+      { path: 'crear-reserva', component: CrearReservaComponent },
+      
+      // Zona Admin (Doble protección: Login + Ser Ayudante)
+      { 
+        path: 'admin', 
+        canActivate: [roleGuard],
+        component: DashboardComponent 
+      },
+    ]
+  },
+
+  // 3. COMODÍN: Cualquier ruta desconocida manda al login
+  { path: '**', redirectTo: 'login' }
 ];

@@ -1,205 +1,190 @@
-<mat-toolbar class="landing-navbar">
-  <span class="logo">
-    <mat-icon color="primary">meeting_room</mat-icon> {{ title }}
-  </span>
+<!-- NAVBAR -->
+<nav class="w-full h-20 px-10 bg-white shadow-lg flex items-center">
+  <div class="flex items-center font-extrabold text-2xl text-blue-900">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-8 h-8 mr-2 text-blue-900"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M3.75 21h16.5M4.5 3h15l-1.5 12h-12L4.5 3z"
+      />
+    </svg>
+    {{ title }}
+  </div>
 
-  <span class="spacer"></span>
-  <button
-    mat-flat-button
+  <div class="flex-1"></div>
+
+  <!-- BOTONES -->
+  <a
     routerLink="/estadisticas"
-    color="primary"
-    class="action-button"
+    class="px-6 py-3 bg-blue-900 text-white rounded-xl mx-2 font-bold hover:scale-105 transition"
   >
-    Estadisticas
-  </button>
-  <button
-    mat-flat-button
+    Estadísticas
+  </a>
+  <a
     routerLink="/gestionar-sala"
-    color="primary"
-    class="action-button"
+    class="px-6 py-3 bg-blue-900 text-white rounded-xl mx-2 font-bold hover:scale-105 transition"
   >
-    Gestionar salas
-  </button>
-  <button mat-flat-button color="primary" routerLink="" class="action-button">
-    Calendario
-  </button>
-  <button
-    mat-flat-button
+    Gestionar Salas
+  </a>
+  <a
     routerLink="/mis-reservas"
-    color="primary"
-    class="action-button"
+    class="px-6 py-3 bg-blue-900 text-white rounded-xl mx-2 font-bold hover:scale-105 transition"
   >
     Mis Reservas
-  </button>
+  </a>
 
-  <!-- Botón para abrir modal login -->
   <button
-    mat-flat-button
-    color="primary"
     (click)="abrirLogin()"
-    class="action-button"
+    class="px-6 py-3 bg-blue-700 text-white rounded-xl mx-2 font-bold hover:scale-105 transition"
   >
     Acceder Intranet
   </button>
+</nav>
 
-  <button mat-icon-button aria-label="Ayuda">
-    <mat-icon>help_outline</mat-icon>
-  </button>
-</mat-toolbar>
-
-<div class="hero-container">
-  <div class="hero-content">
-    <h1 class="hero-title">Sistema de Gestión de Salas UTA.</h1>
-    <h1 class="hero-subtitle">
-      Reserva laboratorios, auditorios y salas de reuniones de forma rápida y
-      centralizada.
+<!-- HERO -->
+<section
+  class="w-screen h-[450px] flex items-center justify-center text-center bg-gradient-to-r from-indigo-900 via-blue-200 to-cyan-400 animate-[gradient-shift_20s_ease_infinite]"
+>
+  <div class="max-w-2xl p-6">
+    <h1 class="text-5xl font-bold text-blue-900 drop-shadow">
+      Sistema de Gestión de Salas UTA.
     </h1>
-    <button
-      mat-flat-button
-      color="accent"
-      class="get-started-button"
+    <p class="text-xl text-gray-700 mt-4">
+      Reserva laboratorios, auditorios y salas de reuniones de forma rápida.
+    </p>
+
+    <a
       routerLink="/reservar-sala"
+      class="mt-6 inline-block px-10 py-4 bg-green-600 text-white rounded-xl text-xl font-bold shadow-xl hover:scale-105 transition"
     >
       Reservar Ahora 📅
-    </button>
+    </a>
   </div>
-</div>
+</section>
 
-<div class="features-section">
-  @for (feature of features; track feature.title) {
-  <mat-card class="feature-card">
-    <mat-card-content>
-      <mat-icon color="primary" class="feature-icon">{{
-        feature.icon
-      }}</mat-icon>
-      <h3 class="feature-title">{{ feature.title }}</h3>
-      <p class="feature-description">{{ feature.description }}</p>
-    </mat-card-content>
-  </mat-card>
-  }
-</div>
+<!-- FEATURES -->
+<section class="w-full bg-gray-100 py-20 flex flex-wrap justify-center gap-10">
+  <div
+    *ngFor="let feature of features"
+    class="w-80 bg-white rounded-xl shadow-lg p-10 text-center hover:-translate-y-2 transition"
+  >
+    <svg [ngSwitch]="feature.icon" class="w-16 h-16 text-blue-500 mx-auto mb-4">
+      <ng-container *ngSwitchCase="'calendar-days'">
+        <path
+          stroke="currentColor"
+          stroke-width="1.5"
+          fill="none"
+          d="M6 2v4m12-4v4M3 8h18M4 12h16m-8 4h4M6 20h12"
+        />
+      </ng-container>
 
-<!-- MODAL LOGIN / REGISTRO -->
+      <ng-container *ngSwitchCase="'clock'">
+        <path
+          stroke="currentColor"
+          stroke-width="1.5"
+          fill="none"
+          d="M12 6v6l4 2m-4-12a9 9 0 100 18 9 9 0 000-18z"
+        />
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'information-circle'">
+        <path
+          stroke="currentColor"
+          stroke-width="1.5"
+          fill="none"
+          d="M12 8h.01M12 12v4m0 6a10 10 0 100-20 10 10 0 000 20z"
+        />
+      </ng-container>
+    </svg>
+
+    <h3 class="text-2xl font-bold text-blue-900">{{ feature.title }}</h3>
+    <p class="text-gray-600 mt-3">{{ feature.description }}</p>
+  </div>
+</section>
+
+<!-- MODAL LOGIN -->
 <div
   *ngIf="mostrarLogin"
-  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+  class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
 >
-  <div class="bg-white rounded-3xl shadow-2xl w-[500px] p-10 relative">
-    <h2 class="text-3xl font-bold text-center mb-8">
+  <div class="bg-white w-[450px] p-10 rounded-3xl shadow-2xl relative">
+    <h2 class="text-3xl font-bold text-center mb-6">
       {{ modoRegistro ? "Registrarse" : "Iniciar Sesión" }}
     </h2>
 
-    <!-- FORMULARIO LOGIN -->
+    <!-- LOGIN -->
     <form
       *ngIf="!modoRegistro"
       [formGroup]="loginForm"
       (ngSubmit)="login()"
-      class="flex flex-col gap-6"
+      class="flex flex-col gap-4"
     >
       <input
-        type="email"
-        placeholder="Correo electrónico"
+        class="border p-3 rounded-xl"
+        placeholder="Email"
         formControlName="email"
-        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
       />
       <input
-        type="password"
+        class="border p-3 rounded-xl"
         placeholder="Contraseña"
+        type="password"
         formControlName="password"
-        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
       />
 
-      <div class="flex justify-between items-center mt-4">
-        <button
-          type="submit"
-          class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105"
-        >
-          Entrar
-        </button>
-        <button
-          type="button"
-          (click)="cerrarLogin()"
-          class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105"
-        >
-          Cancelar
-        </button>
-      </div>
-
-      <p class="text-center text-gray-500 mt-4">
-        ¿No tienes cuenta?
-        <span
-          class="text-blue-500 cursor-pointer hover:underline"
-          (click)="abrirRegistro()"
-        >
-          Regístrate
-        </span>
-      </p>
+      <button
+        class="bg-blue-600 text-white py-3 rounded-xl font-bold hover:scale-105 transition"
+      >
+        Entrar
+      </button>
     </form>
 
-    <!-- FORMULARIO REGISTRO -->
+    <!-- REGISTRO -->
     <form
       *ngIf="modoRegistro"
       [formGroup]="registerForm"
       (ngSubmit)="registrar()"
-      class="flex flex-col gap-6"
+      class="flex flex-col gap-4"
     >
       <input
-        type="text"
+        class="border p-3 rounded-xl"
         placeholder="Nombre completo"
         formControlName="nombre"
-        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
       />
       <input
-        type="email"
-        placeholder="Correo @alumnos.uta.cl"
+        class="border p-3 rounded-xl"
+        placeholder="Correo institucional"
         formControlName="email"
-        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
       />
       <input
-        type="password"
+        class="border p-3 rounded-xl"
         placeholder="Contraseña"
+        type="password"
         formControlName="password"
-        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
       />
       <input
-        type="password"
+        class="border p-3 rounded-xl"
         placeholder="Confirmar contraseña"
+        type="password"
         formControlName="confirmarPassword"
-        class="border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
       />
 
-      <div class="flex justify-between items-center mt-4">
-        <button
-          type="submit"
-          class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105"
-        >
-          Registrarse
-        </button>
-        <button
-          type="button"
-          (click)="cerrarLogin()"
-          class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105"
-        >
-          Cancelar
-        </button>
-      </div>
-
-      <p class="text-center text-gray-500 mt-4">
-        ¿Ya tienes cuenta?
-        <span
-          class="text-blue-500 cursor-pointer hover:underline"
-          (click)="abrirLogin()"
-        >
-          Inicia Sesión
-        </span>
-      </p>
+      <button
+        class="bg-green-600 text-white py-3 rounded-xl font-bold hover:scale-105 transition"
+      >
+        Registrarse
+      </button>
     </form>
 
-    <!-- Botón cerrar modal -->
     <button
-      type="button"
       (click)="cerrarLogin()"
-      class="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+      class="absolute top-4 right-4 text-gray-400 hover:text-black"
     >
       ✖
     </button>

@@ -24,11 +24,8 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
-              "src/styles.css"
-            ],
-            "scripts": ["node_modules/flowbite/dist/flowbite.min.js"]
+            "styles": ["src/styles.css"],
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -80,10 +77,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
-              "src/styles.css"
-            ],
+            "styles": ["src/styles.css"],
             "scripts": []
           }
         }

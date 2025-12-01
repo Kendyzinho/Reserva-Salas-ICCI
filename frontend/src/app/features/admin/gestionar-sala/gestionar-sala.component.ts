@@ -1,40 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import {
   FormGroup,
-  FormControl,
   Validators,
   ReactiveFormsModule,
   FormsModule,
   FormBuilder,
 } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
 import { Sala } from '../../../core/models/sala.model';
 import { SalaService } from './sala.service';
 
 @Component({
   selector: 'app-gestionar-sala',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './gestionar-sala.component.html',
   styleUrl: './gestionar-sala.component.scss',
 })
@@ -79,10 +58,8 @@ export class GestionarSalaComponent implements OnInit {
   }
 
   crearSala() {
-    if (this.form.invalid) {
-      console.log('Formulario inválido:', this.form.value);
-      return;
-    }
+    if (this.form.invalid) return;
+
     const nombreExistente = this.salas.some(
       (sala) =>
         sala.nombre.toLowerCase() === this.form.value.nombre.toLowerCase()
@@ -90,31 +67,16 @@ export class GestionarSalaComponent implements OnInit {
 
     if (nombreExistente) {
       alert('Ya existe una sala con este nombre.');
-      this.form.controls['nombre'].setErrors({ duplicado: true });
       return;
     }
 
-    console.log('Enviando al backend:', this.form.value);
-
     this.salaService.create(this.form.value).subscribe({
-      next: (data) => {
-        console.log('Sala creada:', data);
+      next: () => {
         this.cargarSalas();
         this.form.reset({ capacidadMax: 1, esMantencion: false });
       },
-      error: (err) => {
-        console.error('Error creando sala:', err);
-
-        // Validación backend: nombre duplicado
-        if (
-          err?.error?.code === 'ER_DUP_ENTRY' ||
-          err?.code === 'ER_DUP_ENTRY'
-        ) {
-          alert('Ya existe una sala con este nombre en la base de datos.');
-          this.form.controls['nombre'].setErrors({ duplicado: true });
-        } else {
-          alert('Error al crear la sala. Intenta nuevamente.');
-        }
+      error: () => {
+        alert('Error al crear la sala.');
       },
     });
   }
@@ -128,7 +90,6 @@ export class GestionarSalaComponent implements OnInit {
   guardarEdicion() {
     if (!this.salaEditandoId || this.form.invalid) return;
 
-    // Validar nombre único ignorando la sala que se edita
     const nombreExistente = this.salas.some(
       (sala) =>
         sala.id_sala !== this.salaEditandoId &&

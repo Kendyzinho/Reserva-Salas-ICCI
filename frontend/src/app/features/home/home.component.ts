@@ -8,66 +8,47 @@ import {
   Validators,
 } from '@angular/forms';
 
-// Material Modules
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  imports: [
-    CommonModule,
-    RouterModule,
-    ReactiveFormsModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCardModule,
-    MatInputModule,
-  ],
+  styleUrls: ['./home.component.css'],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
 })
 export class HomeComponent {
   title = 'Mi Proyecto Angular Material';
 
   features = [
     {
-      icon: 'date_range',
+      icon: 'calendar-days',
       title: 'Reserva de Salas',
       description:
         'Agenda tu espacio (laboratorio, auditorio, sala) en minutos.',
     },
     {
-      icon: 'event_available',
+      icon: 'clock',
       title: 'Disponibilidad en Tiempo Real',
       description: 'Consulta el estado actual de todas las salas.',
     },
     {
-      icon: 'info',
+      icon: 'information-circle',
       title: 'Información de Salas',
       description: 'Detalles sobre capacidad, equipamiento y ubicación.',
     },
   ];
 
-  // Modal login/registro
   mostrarLogin = false;
-  modoRegistro = false; // false = login, true = registro
+  modoRegistro = false;
 
   loginForm: FormGroup;
   registerForm: FormGroup;
 
   constructor(private fb: FormBuilder) {
-    // Login
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
 
-    // Registro
     this.registerForm = this.fb.group({
       nombre: ['', Validators.required],
       email: [
@@ -101,7 +82,6 @@ export class HomeComponent {
     if (this.loginForm.valid) {
       console.log('Login:', this.loginForm.value);
       this.cerrarLogin();
-      // Lógica de autenticación backend
     }
   }
 
@@ -116,7 +96,6 @@ export class HomeComponent {
       }
       console.log('Registro:', this.registerForm.value);
       this.cerrarLogin();
-      // Lógica de registro backend
     }
   }
 }

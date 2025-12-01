@@ -8,7 +8,7 @@
   </h2>
 
   <div class="grid grid-cols-3 gap-10 w-full max-w-[1600px]">
-    <!-- TABLA DE SALAS -->
+    <!-- TABLA -->
     <div
       class="col-span-2 bg-white shadow-3xl rounded-2xl overflow-hidden border border-gray-200"
     >
@@ -18,6 +18,7 @@
         <h3 class="text-2xl font-semibold text-gray-800">Lista de Salas</h3>
         <span class="text-lg text-gray-500">{{ salas.length }} salas</span>
       </div>
+
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 text-lg">
           <thead class="bg-gray-100 text-lg">
@@ -39,6 +40,7 @@
               </th>
             </tr>
           </thead>
+
           <tbody class="bg-white divide-y divide-gray-200">
             <tr
               *ngFor="let sala of salas"
@@ -52,49 +54,31 @@
               <td class="px-6 py-5">
                 <span
                   *ngIf="!sala.esMantencion"
-                  class="inline-flex items-center text-green-500 font-semibold"
-                  >✔️ Disponible</span
+                  class="text-green-500 font-semibold"
                 >
+                  ✔️ Disponible
+                </span>
                 <span
                   *ngIf="sala.esMantencion"
-                  class="inline-flex items-center text-red-500 font-semibold"
+                  class="text-red-500 font-semibold"
                 >
-                  <svg
-                    class="w-5 h-5 mr-1"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 8v4l3 3"
-                    ></path>
-                  </svg>
-                  En Mantención
+                  ⛔ En Mantención
                 </span>
               </td>
+
               <td class="px-6 py-5 flex gap-4">
-                <!-- Botón Editar -->
                 <button
                   class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-3 transition transform hover:scale-110 shadow-md"
                   (click)="activarEdicion(sala)"
-                  title="Editar"
                 >
-                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M4 20h4l10-10-4-4L4 16v4z"></path>
-                  </svg>
+                  ✏️
                 </button>
-                <!-- Botón Eliminar -->
+
                 <button
                   class="bg-red-500 hover:bg-red-600 text-white rounded-lg p-3 transition transform hover:scale-110 shadow-md"
                   (click)="eliminar(sala.id_sala!)"
-                  title="Eliminar"
                 >
-                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M6 18L18 6M6 6l12 12"></path>
-                  </svg>
+                  ❌
                 </button>
               </td>
             </tr>
@@ -103,7 +87,7 @@
       </div>
     </div>
 
-    <!-- FORMULARIO DE SALAS -->
+    <!-- FORMULARIO -->
     <div
       class="bg-white shadow-3xl rounded-2xl p-8 border border-gray-200 animate-slideInRight"
     >
@@ -121,8 +105,9 @@
           formControlName="nombre"
           placeholder="Nombre de la sala"
           list="nombres"
-          class="border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-lg"
+          class="border border-gray-300 rounded-lg p-4 text-lg shadow-sm focus:ring-2 focus:ring-blue-500"
         />
+
         <datalist id="nombres">
           <option *ngFor="let n of nombresPermitidos" [value]="n"></option>
         </datalist>
@@ -131,44 +116,25 @@
           formControlName="descripcion"
           rows="4"
           placeholder="Descripción"
-          class="border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-lg"
+          class="border border-gray-300 rounded-lg p-4 text-lg shadow-sm focus:ring-2 focus:ring-blue-500"
         ></textarea>
 
         <input
           type="number"
           formControlName="capacidadMax"
           placeholder="Capacidad máxima"
-          class="border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-lg"
+          class="border border-gray-300 rounded-lg p-4 text-lg shadow-sm focus:ring-2 focus:ring-blue-500"
         />
 
-        <div class="relative">
-          <select
-            formControlName="tipo"
-            class="appearance-none w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm cursor-pointer text-lg"
-          >
-            <option disabled value="">Selecciona tipo</option>
-            <option *ngFor="let t of tipos" [value]="t">{{ t }}</option>
-          </select>
-          <div
-            class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3"
-          >
-            <svg
-              class="w-6 h-6 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
-        </div>
+        <select
+          formControlName="tipo"
+          class="border border-gray-300 rounded-lg p-4 text-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+        >
+          <option disabled value="">Selecciona tipo</option>
+          <option *ngFor="let t of tipos" [value]="t">{{ t }}</option>
+        </select>
 
-        <label class="flex items-center gap-3 mt-2 text-lg">
+        <label class="flex items-center gap-3 text-lg">
           <input
             type="checkbox"
             formControlName="esMantencion"
@@ -180,15 +146,16 @@
         <div class="flex justify-end gap-4 mt-6">
           <button
             type="submit"
-            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition transform hover:scale-105 text-lg"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md text-lg transition hover:scale-105"
           >
             {{ editMode ? "Guardar" : "Crear" }}
           </button>
+
           <button
             type="button"
             *ngIf="editMode"
             (click)="cancelarEdicion()"
-            class="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition transform hover:scale-105 text-lg"
+            class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg shadow-md text-lg transition hover:scale-105"
           >
             Cancelar
           </button>

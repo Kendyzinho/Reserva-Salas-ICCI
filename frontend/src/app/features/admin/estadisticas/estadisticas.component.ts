@@ -1,52 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChartConfiguration, ChartData, ChartOptions } from 'chart.js';
-import { BaseChartDirective, NgChartsModule } from 'ng2-charts';
-
-interface SalaStats {
-  nombre: string;
-  capacidad: number;
-  tipo: 'laboratorio' | 'sala de clases';
-  esMantencion: boolean;
-}
 
 @Component({
   selector: 'app-estadisticas',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule],
   templateUrl: './estadisticas.component.html',
-  styleUrls: ['./estadisticas.component.scss'],
 })
 export class EstadisticasComponent implements OnInit {
-  // Datos simulados
   salas: any[] = [];
 
-  // Datos de los gráficos
-  disponibilidadData!: ChartData<'doughnut'>;
-  tipoData!: ChartData<'bar'>;
+  // Valores calculados para gráficos
+  porcentajeDisponibles = 0;
+  pieBackground = '';
 
-  // OPCIONES DEL GRÁFICO DOUGHNUT (Aquí va cutout)
-  doughnutOptions: ChartOptions<'doughnut'> = {
-    responsive: true,
-    plugins: {
-      legend: { position: 'bottom' },
-    },
-    cutout: '70%', // ✅ Aquí se define el "corte" del gráfico circular
-  };
+  porcLaboratorios = 0;
+  porcClases = 0;
 
-  // OPCIONES DEL GRÁFICO DE BARRAS
-  barOptions: ChartOptions<'bar'> = {
-    responsive: true,
-    plugins: { legend: { position: 'bottom' } },
-  };
+  cantLaboratorios = 0;
+  cantClases = 0;
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.generarSalasArtificiales();
-    this.generarDatosGraficos();
+    this.calcularGraficos();
   }
 
   generarSalasArtificiales() {
-    // simulación de salas
     const nombres = [
       'Licancabur',
       'Socompa',
@@ -59,7 +38,8 @@ export class EstadisticasComponent implements OnInit {
       'Socoroma',
       'Servidores',
     ];
-    for (let i = 0; i < 10; i++) {
+
+    for (let i = 0; i < nombres.length; i++) {
       this.salas.push({
         nombre: nombres[i],
         capacidad: Math.floor(Math.random() * 50) + 10,
@@ -69,47 +49,48 @@ export class EstadisticasComponent implements OnInit {
     }
   }
 
-  generarDatosGraficos() {
-    const disponibles = this.salas.filter((s) => !s.esMantencion).length;
-    const mantencion = this.salas.filter((s) => s.esMantencion).length;
+  calcularGraficos() {
+    const total = this.salas.length;
 
-    this.disponibilidadData = {
-      labels: ['Disponibles', 'En Mantención'],
-      datasets: [
-        {
-          data: [disponibles, mantencion],
-          backgroundColor: ['#34D399', '#F87171'],
-        },
-      ],
-    };
+    // Disponibles vs Mantención
+    const disponibles = this.totalDisponibles();
+    const mantencion = this.totalMantencion();
 
-    const laboratorio = this.salas.filter(
+    this.porcentajeDisponibles = Math.round((disponibles / total) * 100);
+
+    // CSS para gráfico doughnut
+    const disponiblesPorc = (disponibles / total) * 360;
+    this.pieBackground = `
+      conic-gradient(
+        #34D399 ${disponiblesPorc}deg,
+        #F87171 ${disponiblesPorc}deg
+      )
+    `;
+
+    // Barras
+    this.cantLaboratorios = this.salas.filter(
       (s) => s.tipo === 'laboratorio'
     ).length;
-    const clases = this.salas.filter((s) => s.tipo === 'sala de clases').length;
+    this.cantClases = this.salas.filter(
+      (s) => s.tipo === 'sala de clases'
+    ).length;
 
-    this.tipoData = {
-      labels: ['Laboratorio', 'Sala de Clases'],
-      datasets: [
-        {
-          label: 'Cantidad de Salas',
-          data: [laboratorio, clases],
-          backgroundColor: ['#3B82F6', '#FBBF24'],
-        },
-      ],
-    };
+    this.porcLaboratorios = (this.cantLaboratorios / total) * 100;
+    this.porcClases = (this.cantClases / total) * 100;
   }
 
-  // MÉTRICAS
   totalSalas() {
     return this.salas.length;
   }
+
   totalDisponibles() {
     return this.salas.filter((s) => !s.esMantencion).length;
   }
+
   totalMantencion() {
     return this.salas.filter((s) => s.esMantencion).length;
   }
+
   capacidadTotal() {
     return this.salas.reduce((acc, s) => acc + s.capacidad, 0);
   }

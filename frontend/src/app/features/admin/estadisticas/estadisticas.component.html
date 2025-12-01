@@ -13,53 +13,81 @@
         <p class="text-gray-600 font-semibold text-lg">Total de Salas</p>
         <p class="text-4xl font-bold text-blue-600">{{ totalSalas() }}</p>
       </div>
+
       <div class="bg-white shadow-xl rounded-2xl p-8 text-center">
         <p class="text-gray-600 font-semibold text-lg">Salas Disponibles</p>
         <p class="text-4xl font-bold text-green-500">
           {{ totalDisponibles() }}
         </p>
       </div>
+
       <div class="bg-white shadow-xl rounded-2xl p-8 text-center">
         <p class="text-gray-600 font-semibold text-lg">En Mantención</p>
         <p class="text-4xl font-bold text-red-500">{{ totalMantencion() }}</p>
       </div>
+
       <div class="bg-white shadow-xl rounded-2xl p-8 text-center">
         <p class="text-gray-600 font-semibold text-lg">Capacidad Total</p>
-        <p class="text-4xl font-bold text-yellow-500">{{ capacidadTotal() }}</p>
+        <p class="text-4xl font-bold text-yellow-500">
+          {{ capacidadTotal() }}
+        </p>
       </div>
     </div>
 
     <!-- GRÁFICOS -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-      <!-- Doughnut Chart -->
+      <!-- DOUGHNUT SOLO CON CSS -->
       <div
         class="bg-white shadow-xl rounded-2xl p-8 flex flex-col items-center"
       >
         <h3 class="text-3xl font-semibold mb-6">Disponibilidad de Salas</h3>
-        <div class="w-72 h-72 md:w-80 md:h-80">
-          <canvas
-            baseChart
-            [data]="disponibilidadData"
-            [type]="'doughnut'"
-            [options]="doughnutOptions"
-          >
-          </canvas>
+
+        <div class="relative w-64 h-64 flex items-center justify-center">
+          <!-- Círculo exterior -->
+          <div
+            class="absolute w-full h-full rounded-full"
+            [style.background]="pieBackground"
+          ></div>
+
+          <!-- Círculo interior -->
+          <div class="absolute w-32 h-32 bg-white rounded-full"></div>
+
+          <p class="absolute text-2xl font-semibold text-gray-700">
+            {{ porcentajeDisponibles }}%
+          </p>
         </div>
       </div>
 
-      <!-- Bar Chart -->
+      <!-- GRÁFICO DE BARRAS -->
       <div
         class="bg-white shadow-xl rounded-2xl p-8 flex flex-col items-center"
       >
         <h3 class="text-3xl font-semibold mb-6">Salas por Tipo</h3>
-        <div class="w-full h-72 md:h-80">
-          <canvas
-            baseChart
-            [data]="tipoData"
-            [type]="'bar'"
-            [options]="barOptions"
-          >
-          </canvas>
+
+        <div class="w-full flex flex-col gap-6">
+          <!-- Laboratorios -->
+          <div>
+            <p class="font-semibold text-gray-700 mb-2">Laboratorios</p>
+            <div class="w-full h-8 bg-gray-200 rounded-xl overflow-hidden">
+              <div
+                class="h-full bg-blue-500"
+                [style.width.%]="porcLaboratorios"
+              ></div>
+            </div>
+            <p class="mt-1 text-gray-600">{{ cantLaboratorios }}</p>
+          </div>
+
+          <!-- Salas de Clase -->
+          <div>
+            <p class="font-semibold text-gray-700 mb-2">Salas de Clase</p>
+            <div class="w-full h-8 bg-gray-200 rounded-xl overflow-hidden">
+              <div
+                class="h-full bg-yellow-400"
+                [style.width.%]="porcClases"
+              ></div>
+            </div>
+            <p class="mt-1 text-gray-600">{{ cantClases }}</p>
+          </div>
         </div>
       </div>
     </div>

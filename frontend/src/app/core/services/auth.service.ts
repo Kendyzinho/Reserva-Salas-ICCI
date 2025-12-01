@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, map } from 'rxjs';
+import { Observable, tap, catchError, of, throwError } from 'rxjs'; // Agregamos operadores
 import { Usuario } from '../models/usuario.model';
 import { Router } from '@angular/router';
 
@@ -10,20 +10,25 @@ import { Router } from '@angular/router';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = 'http://localhost:3000'; // Tu JSON Server
 
-  // Login: Busca usuario por email y pass
-  login(email: string, pass: string): Observable<Usuario | null> {
-    return this.http.get<Usuario[]>(`${this.apiUrl}/usuarios?email=${email}&password=${pass}`)
+  // 1. Asegúrate que apunte a tu puerto 3000
+  private apiUrl = 'http://localhost:3000/api'; 
+
+  // --- LOGIN ACTUALIZADO PARA MYSQL ---
+  login(email: string, password: string): Observable<Usuario> {
+    // Ahora usamos POST y enviamos un objeto { email, password }
+    return this.http.post<Usuario>(`${this.apiUrl}/login`, { email, password })
       .pipe(
-        map(users => {
-          if (users.length > 0) {
-            const user = users[0];
-            // Guardamos en localStorage
+        tap(user => {
+          // Si el servidor responde éxito, guardamos el usuario
+          if (user) {
             localStorage.setItem('user', JSON.stringify(user));
-            return user;
           }
-          return null;
+        }),
+        catchError(error => {
+          // Si el servidor responde 401 (Credenciales malas), lanzamos el error
+          console.error('Error en login:', error);
+          return throwError(() => error);
         })
       );
   }
@@ -38,11 +43,6 @@ export class AuthService {
     return userStr ? JSON.parse(userStr) : null;
   }
 
-  isAyudante(): boolean {
-    const user = this.getUser();
-    return user?.rol === 'AYUDANTE';
-  }
-  
   isAuthenticated(): boolean {
     return !!localStorage.getItem('user');
   }

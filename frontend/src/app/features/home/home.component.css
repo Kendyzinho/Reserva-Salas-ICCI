@@ -1,0 +1,111 @@
+/* HERO */
+.hero {
+  width: 100vw;
+  height: 450px;
+  background: linear-gradient(to right, #1e1c62, #a7c4f2, #58c4d6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-content h1 {
+  font-size: 48px;
+  color: #0f2d5c;
+  margin-bottom: 10px;
+}
+
+.hero-content p {
+  font-size: 20px;
+  color: #333;
+}
+
+.reserve-btn {
+  margin-top: 25px;
+  padding: 14px 40px;
+  background-color: #0c8a3f;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* FEATURES */
+.features {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 40px;
+  flex-wrap: wrap;
+  background-color: #f2f2f2;
+}
+
+.feature-card {
+  width: 260px;
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.feature-card h3 {
+  color: #0f2d5c;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: white;
+  padding: 28px;
+  width: 420px;
+  border-radius: 14px;
+  position: relative;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.modal h2 {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.modal input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.primary-btn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px;
+  background: #1f4cdc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.close-btn {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}

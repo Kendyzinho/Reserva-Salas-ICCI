@@ -4,6 +4,7 @@ import { MisReservasComponent } from './features/estudiante/mis-reservas/mis-res
 import { CrearReservaComponent } from './features/estudiante/crear-reserva/crear-reserva.component';
 import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
 import { CalendarioComponent } from './features/estudiante/calendario/calendario.component'; 
+import { HomeComponent } from './features/home/home.component';
 
 export const routes: Routes = [
   // 1. REGLA DE ORO: Si entro a la raíz, mándame al calendario
@@ -11,7 +12,7 @@ export const routes: Routes = [
 
   // 2. Ruta directa del calendario (SIN GUARDS NI NADA)
   { path: 'calendario', component: CalendarioComponent },
-
+{ path: 'home', component: HomeComponent },
   // 3. El resto de rutas
   { path: 'login', component: LoginComponent },
   { path: 'mis-reservas', component: MisReservasComponent },

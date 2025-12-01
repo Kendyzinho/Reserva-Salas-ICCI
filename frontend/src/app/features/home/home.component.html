@@ -1,0 +1,55 @@
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Sistema de Gestión de Salas UTA</h1>
+    <p>Reserva laboratorios, auditorios y salas de reuniones de forma rápida.</p>
+
+    <!-- BOTÓN QUE ABRE LOGIN -->
+    <button class="reserve-btn" (click)="abrirLogin()">
+      Reservar Ahora 📅
+    </button>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="feature-card">
+    <h3>Reserva de Salas</h3>
+    <p>Agenda tu espacio (laboratorio, auditorio, sala) en minutos.</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>Disponibilidad en Tiempo Real</h3>
+    <p>Consulta el estado actual de todas las salas.</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>Información de Salas</h3>
+    <p>Detalles sobre capacidad, equipamiento y ubicación.</p>
+  </div>
+</section>
+
+<!-- MODAL LOGIN -->
+<div class="modal-overlay" *ngIf="mostrarLogin">
+  <div class="modal">
+    <h2>{{ modoRegistro ? "Registrarse" : "Iniciar Sesión" }}</h2>
+
+    <!-- LOGIN -->
+    <form *ngIf="!modoRegistro" [formGroup]="loginForm" (ngSubmit)="login()">
+      <input formControlName="email" placeholder="Correo institucional (@alumnos.uta.cl)" />
+      <input formControlName="password" type="password" placeholder="Contraseña" />
+      <button type="submit" class="primary-btn">Entrar</button>
+    </form>
+
+    <!-- REGISTRO -->
+    <form *ngIf="modoRegistro" [formGroup]="registerForm" (ngSubmit)="registrar()">
+      <input formControlName="nombre" placeholder="Nombre completo" />
+      <input formControlName="email" placeholder="Correo institucional (@alumnos.uta.cl)" />
+      <input formControlName="password" type="password" placeholder="Contraseña" />
+      <input formControlName="confirmarPassword" type="password" placeholder="Confirmar contraseña" />
+      <button class="primary-btn">Registrarse</button>
+    </form>
+
+    <button class="close-btn" (click)="cerrarLogin()">X</button>
+  </div>
+</div>

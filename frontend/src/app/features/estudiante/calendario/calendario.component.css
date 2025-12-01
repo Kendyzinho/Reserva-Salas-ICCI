@@ -9,7 +9,10 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  gap: 20px;
 }
+
+.filtro-sala { display:flex; align-items:center; gap:8px; }
 
 select {
   padding: 8px;
@@ -18,10 +21,23 @@ select {
   border: 1px solid #ccc;
 }
 
-/* Tabla Estilos */
+/* Botón reservar */
+.btn-reservar {
+  background: #0056b3;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+.btn-reservar:hover { transform: translateY(-2px); }
+
+/* Tabla */
 .table-responsive {
   overflow-x: auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0,0,0,0.08);
   border-radius: 8px;
 }
 
@@ -35,28 +51,28 @@ th, td {
   border: 1px solid #eee;
   padding: 10px;
   text-align: center;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 th {
   background-color: #0056b3;
   color: white;
-  padding: 15px;
+  padding: 12px;
 }
 
 .hora-celda {
   background-color: #f9f9f9;
   font-weight: bold;
   color: #555;
-  width: 80px;
+  width: 150px;
 }
 
-/* Tarjetas dentro de la celda */
+/* Celdas */
 .card-reserva {
   border-radius: 4px;
   padding: 8px;
   font-size: 0.85rem;
-  min-height: 50px;
+  min-height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -67,18 +83,21 @@ th {
   background-color: #ffebee;
   color: #c62828;
   border-left: 3px solid #c62828;
+  cursor: pointer;
 }
 
 .card-reserva.libre {
   background-color: #e8f5e9;
   color: #2e7d32;
-  opacity: 0.6;
-  transition: 0.3s;
-  cursor: pointer;
+  opacity: 0.9;
+  transition: 0.2s;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  justify-content:center;
 }
 
 .card-reserva.libre:hover {
-  opacity: 1;
   transform: scale(1.02);
 }
 
@@ -93,8 +112,57 @@ th {
   color: white;
   border: none;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   margin-top: 5px;
+  cursor: pointer;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-card {
+  background: white;
+  padding: 18px;
+  border-radius: 8px;
+  width: 380px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.form-reserva {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-reserva input,
+.form-reserva select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.btn-crear {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.btn-cerrar {
+  background: #c62828;
+  color: white;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 6px;
   cursor: pointer;
 }

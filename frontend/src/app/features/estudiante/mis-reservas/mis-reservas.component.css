@@ -1,0 +1,75 @@
+.historial-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+h2 { color: #003366; margin-bottom: 5px; }
+.subtitle { color: #666; margin-bottom: 30px; }
+
+/* Tabla */
+.table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+}
+
+th {
+  text-align: left;
+  padding: 15px;
+  color: #495057;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+td {
+  padding: 15px;
+  border-bottom: 1px solid #e9ecef;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+tr:hover { background-color: #f8f9fa; }
+.text-center { text-align: center; }
+.sala-nombre { font-weight: bold; color: #003366; }
+
+/* Etiquetas de Estado (Badges) */
+.badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.badge-success { background-color: #d4edda; color: #155724; }
+.badge-danger { background-color: #f8d7da; color: #721c24; }
+.badge-warning { background-color: #fff3cd; color: #856404; }
+.badge-secondary { background-color: #e2e3e5; color: #383d41; }
+
+/* Mensajes vacíos */
+.loading-state, .empty-state {
+  text-align: center; padding: 40px;
+  background: white; border-radius: 8px; color: #666;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.btn-ir-calendario {
+  display: inline-block; margin-top: 15px;
+  background-color: #003366; color: white;
+  padding: 10px 20px; text-decoration: none;
+  border-radius: 5px; font-weight: bold;
+}

@@ -117,3 +117,32 @@ app.post('/api/reservas', (req, res) => {
         res.status(201).json({ message: 'Reserva creada con éxito', id: result.insertId });
     });
 });
+
+// 4. Obtener historial de reservas de un usuario
+app.get('/api/reservas/usuario/:userId', (req, res) => {
+    const { userId } = req.params;
+    
+    const sql = `
+        SELECT 
+            r.id, 
+            r.fecha, 
+            r.bloque_inicio as bloqueInicio, 
+            r.bloque_fin as bloqueFin, 
+            r.motivo, 
+            r.estado,
+            r.cantidad_personas as cantidadPersonas,
+            s.nombre as nombreSala
+        FROM reservas r
+        JOIN salas s ON r.sala_id = s.id
+        WHERE r.usuario_id = ?
+        ORDER BY r.fecha DESC, r.bloque_inicio ASC
+    `;
+    
+    db.query(sql, [userId], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json(err);
+        }
+        res.json(result);
+    });
+});

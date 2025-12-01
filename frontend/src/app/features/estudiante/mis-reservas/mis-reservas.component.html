@@ -1,1 +1,51 @@
-<p>mis-reservas works!</p>
+<div class="historial-container">
+  <h2>📅 Mis Reservas</h2>
+  <p class="subtitle">Historial completo de tus solicitudes.</p>
+
+  @if (loading) {
+    <div class="loading-state">Cargando información...</div>
+  } @else if (reservas.length === 0) {
+    <div class="empty-state">
+      <p>No tienes reservas registradas aún.</p>
+      <a href="/calendario" class="btn-ir-calendario">Ir al Calendario</a>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Horario</th>
+            <th>Sala</th>
+            <th>Motivo</th>
+            <th>Personas</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (reserva of reservas; track reserva.id) {
+            <tr>
+              <!-- Fecha formateada dd/mm/yyyy -->
+              <td>{{ reserva.fecha | date:'dd/MM/yyyy' : 'UTC' }}</td>
+              
+              <!-- Hora cortada (08:00) -->
+              <td>{{ reserva.bloqueInicio.slice(0,5) }} - {{ reserva.bloqueFin.slice(0,5) }}</td>
+              
+              <td class="sala-nombre">{{ reserva.nombreSala }}</td>
+              
+              <td>{{ reserva.motivo }}</td>
+              
+              <td class="text-center">{{ reserva.cantidadPersonas }}</td>
+              
+              <td>
+                <span class="badge" [ngClass]="getClassEstado(reserva.estado)">
+                  {{ reserva.estado }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

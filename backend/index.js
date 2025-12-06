@@ -148,7 +148,7 @@ app.get("/api/reservas/usuario/:userId", (req, res) => {
          r.bloque_fin as bloqueFin, 
          r.motivo, 
          r.estado,
-         //r.cantidad_personas as cantidadPersonas,
+         r.cantidad_personas as cantidadPersonas,
          s.nombre as nombreSala
         FROM reservas r
         JOIN salas s ON r.sala_id = s.id

@@ -9,9 +9,12 @@ import { GestionSalasComponent } from './features/admin/gestion-salas/gestion-sa
 
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { RecuperarPasswordComponent } from './features/estudiante/recuperar-password/recuperar-password.component';
+import { AyudantePasswordPanelComponent } from './features/admin/ayudante-password-panel/ayudante-password-panel.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'recuperar-password', component: RecuperarPasswordComponent },
 
   {
     path: '',
@@ -21,20 +24,24 @@ export const routes: Routes = [
       { path: 'calendario', component: CalendarioComponent },
       { path: 'mis-reservas', component: MisReservasComponent },
       { path: 'crear-reserva', component: CrearReservaComponent },
-      
+
       // ZONA ADMIN
-      { 
-        path: 'admin', 
+      {
+        path: 'admin',
         canActivate: [roleGuard],
         children: [
-            // Si entran a /admin van al dashboard
-            { path: '', component: DashboardComponent },
-            // 2. AGREGAR LA RUTA DE SALAS AQUÍ
-            { path: 'salas', component: GestionSalasComponent } 
-        ]
+          // Si entran a /admin van al dashboard
+          { path: '', component: DashboardComponent },
+          // 2. AGREGAR LA RUTA DE SALAS AQUÍ
+          { path: 'salas', component: GestionSalasComponent },
+          {
+            path: 'ayudante-password-panel',
+            component: AyudantePasswordPanelComponent,
+          },
+        ],
       },
-    ]
+    ],
   },
 
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'login' },
 ];

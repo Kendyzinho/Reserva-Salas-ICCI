@@ -2,18 +2,15 @@
   display: block;
   background-color: #003366; /* Azul UTA */
   color: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 1000; /* Para asegurar que esté encima de todo */
 }
 
 .navbar-container {
-  display: flex;
-  justify-content: space-between; /* Esto empuja el usuario a la derecha total */
-  align-items: center;
-  height: 70px;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none; /* ❗ ocupa todo el ancho */
+  margin: 0;
   padding: 0 20px;
 }
 
@@ -28,11 +25,19 @@
 .logo-img {
   height: 50px;
   width: auto;
-  filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
 }
 
-.brand-text h1 { margin: 0; font-size: 1.2rem; font-weight: bold; }
-.brand-text span { font-size: 0.8rem; opacity: 0.8; display: block; }
+.brand-text h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.brand-text span {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  display: block;
+}
 
 /* --- ZONA DEL USUARIO --- */
 .user-container {
@@ -67,12 +72,12 @@
 .dropdown-menu {
   position: absolute;
   top: 100%; /* Justo debajo del nombre */
-  right: 0;   /* Alineado a la derecha */
+  right: 0; /* Alineado a la derecha */
   width: 200px;
   background-color: white;
   color: #333;
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   padding: 10px 0;
   margin-top: 10px; /* Un pequeño espacio */
   display: flex;

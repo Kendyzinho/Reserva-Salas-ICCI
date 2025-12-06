@@ -1,0 +1,18 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Toda la altura visible */
+}
+
+.main-content {
+  flex: 1; /* El contenido ocupa todo el espacio restante */
+  display: block;
+  overflow-x: hidden; /* Evita scroll horizontal */
+}

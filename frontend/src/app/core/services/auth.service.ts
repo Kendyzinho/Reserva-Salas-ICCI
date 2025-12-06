@@ -5,12 +5,12 @@ import { Usuario } from '../models/usuario.model';
 import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = 'http://localhost:3000/api'; 
+  private apiUrl = 'http://localhost:3000/api';
 
   // 1. CREAMOS EL CANAL DE NOTICIAS (BehaviorSubject)
   // Lo inicializamos leyendo el localStorage para saber si ya hay alguien al entrar
@@ -22,16 +22,17 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
 
   login(email: string, password: string): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.apiUrl}/login`, { email, password })
+    return this.http
+      .post<Usuario>(`${this.apiUrl}/login`, { email, password })
       .pipe(
-        tap(user => {
+        tap((user) => {
           if (user) {
             localStorage.setItem('user', JSON.stringify(user));
             // 3. AVISAMOS A TODOS QUE HAY UN NUEVO USUARIO
             this.currentUserSubject.next(user);
           }
         }),
-        catchError(error => {
+        catchError((error) => {
           console.error('Error en login:', error);
           return throwError(() => error);
         })

@@ -11,10 +11,14 @@ import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { RecuperarPasswordComponent } from './features/estudiante/recuperar-password/recuperar-password.component';
 import { AyudantePasswordPanelComponent } from './features/admin/ayudante-password-panel/ayudante-password-panel.component';
+import { NotificacionesComponent } from './features/estudiante/notificaciones/notificaciones.component';
+import { HomeComponent } from './features/home/home.component';
 
 export const routes: Routes = [
+  { path: '', redirectTo: 'home', pathMatch: 'full' }, // ← HOME COMO INICIAL SIN LOGIN
   { path: 'login', component: LoginComponent },
   { path: 'recuperar-password', component: RecuperarPasswordComponent },
+  { path: 'home', component: HomeComponent },
 
   {
     path: '',
@@ -24,6 +28,7 @@ export const routes: Routes = [
       { path: 'calendario', component: CalendarioComponent },
       { path: 'mis-reservas', component: MisReservasComponent },
       { path: 'crear-reserva', component: CrearReservaComponent },
+      { path: 'notificaciones', component: NotificacionesComponent }, // ← NUEVO
 
       // ZONA ADMIN
       {

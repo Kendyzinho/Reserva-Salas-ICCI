@@ -1,34 +1,41 @@
-/* CONTENEDOR PRINCIPAL DEL LOGIN */
+/* ======================= CONTENEDOR PRINCIPAL DEL LOGIN ======================= */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 81vh; /* Mantengo tu altura original */
+  min-height: 81vh;
   padding: 10px;
   background-color: #f4f6f8;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   overflow: hidden;
-  gap: 30px; /* De tu nuevo estilo */
+  gap: 30px;
   transition: 0.3s;
 }
 
-/* Cuando se abre el panel de recuperación */
 .login-container.show-recuperar {
-  justify-content: space-evenly; /* Se separan las tarjetas */
+  justify-content: center;
 }
 
-/* TARJETA PRINCIPAL */
+/* ======================= TARJETA LOGIN ======================= */
 .login-card {
   background: white;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 380px; /* Respeto tu tamaño original */
+  max-width: 380px;
   text-align: center;
+  position: relative;
+  transition: transform 0.3s ease;
 }
 
-/* TITULOS */
+/* ❌ ELIMINADO/MODIFICADO: Se elimina el desplazamiento que movía la tarjeta de Login */
+.modal-wrapper.show-recuperar .login-card {
+  /* transform: translateX(-70px); */
+  transform: none; /* Asegura que la tarjeta de login se quede centrada detrás del modal */
+}
+
+/* ======================= TITULOS ======================= */
 .login-card h2 {
   margin-bottom: 0.5rem;
   color: #333;
@@ -39,7 +46,7 @@
   margin-bottom: 2rem;
 }
 
-/* FORMULARIO */
+/* ======================= FORMULARIO ======================= */
 .form-group {
   margin-bottom: 1.5rem;
   text-align: left;
@@ -71,7 +78,7 @@
   border-color: #dc3545;
 }
 
-/* ERRORES */
+/* ======================= ERRORES ======================= */
 .error-msg {
   color: #dc3545;
   font-size: 0.85rem;
@@ -88,7 +95,7 @@
   font-size: 0.9rem;
 }
 
-/* BOTÓN */
+/* ======================= BOTÓN ======================= */
 button {
   width: 100%;
   padding: 12px;
@@ -110,7 +117,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* PANEL DE RECUPERAR PASSWORD */
+/* ======================= TARJETA RECUPERAR ======================= */
 .recuperar-card {
   background: white;
   padding: 2rem;
@@ -120,13 +127,28 @@ button:disabled {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   animation: slideIn 0.3s ease-out;
 }
-/* LINK DE OLVIDAR CONTRASEÑA */
+
+/* Animación del panel */
+/* MODIFICADO: Se elimina el desplazamiento para que aparezca en el centro del modal-wrapper */
+@keyframes slideIn {
+  from {
+    /* transform: translateX(60px); */
+    transform: none;
+    opacity: 0;
+  }
+  to {
+    transform: none; /* Antes era translateX(0) */
+    opacity: 1;
+  }
+}
+
+/* ======================= LINK RECUPERAR ======================= */
 .recuperar-link {
   color: #0056b3;
   font-size: 1rem;
   cursor: pointer;
   text-decoration: underline;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: 0.2s;
   font-weight: 500;
 }
 
@@ -135,18 +157,137 @@ button:disabled {
   transform: scale(1.03);
 }
 
-.recuperar-link:active {
-  transform: scale(0.98);
+/* ======================= OVERLAY DEL MODAL ======================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  animation: fadeOverlay 0.25s;
 }
 
-/* Animación al aparecer */
-@keyframes slideIn {
+@keyframes fadeOverlay {
   from {
-    transform: translateX(40px);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
     opacity: 1;
   }
+}
+
+/* ======================= WRAPPER DEL MODAL ======================= */
+.modal-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 420px; /* Ancho para UN solo modal (Login) */
+  padding: 10px;
+  z-index: 1100;
+  animation: modalShow 0.25s ease-out;
+}
+
+/* 👉 CUANDO EL PANEL DE RECUPERACIÓN ESTÁ VISIBLE, AUMENTA EL ANCHO */
+.modal-wrapper.show-recuperar {
+  max-width: 820px; /* 380px (Login) + 380px (Recuperar) + 60px (gap/padding) */
+}
+/* Fin de A. */
+
+/* ======================= CONTENIDO DEL MODAL ======================= */
+/* Este será nuestro contenedor Flex */
+.modal-content {
+  display: flex; /* Habilitar Flexbox */
+  align-items: flex-start;
+  gap: 60px; /* Espacio entre el Login y el Recuperar */
+  justify-content: center;
+}
+/* Fin de B. */
+
+/* ======================= TARJETA LOGIN ======================= */
+.login-card {
+  /* ... (se mantienen las propiedades existentes) ... */
+  flex-shrink: 0; /* Asegura que no se encoja */
+  max-width: 380px; /* Ya estaba, pero lo mantenemos fijo */
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+/* QUITA el panel de Login cuando se muestra Recuperar */
+.modal-wrapper.show-recuperar .login-card {
+  opacity: 0; /* Hacemos transparente el Login */
+  pointer-events: none; /* Deshabilitamos clics en el Login */
+  transform: translateX(
+    -100%
+  ); /* Lo movemos fuera para liberar el espacio central */
+  position: absolute; /* Usamos position absolute para que ocupe el mismo espacio */
+}
+
+/* ======================= TARJETA RECUPERAR ======================= */
+/* Esta tarjeta debe tener las propiedades originales de Login/Recuperar */
+.recuperar-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 380px; /* MISMO ancho que login */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* Asegura que no se encoja */
+  /* Posición por defecto: opacidad cero y fuera del área visible */
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+/* Muestra y centra la tarjeta de Recuperación */
+.modal-wrapper.show-recuperar .recuperar-card {
+  opacity: 1; /* Hacemos visible el Recuperar */
+  transform: translateX(0); /* Lo movemos a su posición final */
+  position: static; /* Ocupa espacio normal en Flexbox */
+}
+
+/* Animación del panel */
+@keyframes slideIn {
+  /* Ya no necesitamos la animación slideIn si usamos la transición CSS en .recuperar-card */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* ======================= BOTÓN CERRAR ======================= */
+.modal-close-btn {
+  /* Posición absoluta para flotar sobre el modal-wrapper */
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  /* Color y estilo solicitado */
+  background: #dc3545; /* Rojo más fuerte (o #ff4f4f si prefieres el tono anterior) */
+  color: white;
+  padding: 22px;
+  border: none;
+  font-size: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 70%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s ease-in-out;
+  z-index: 2000; /* Asegura que esté por encima de las tarjetas */
+}
+
+.modal-close-btn:hover {
+  background: #ca0f22; /* Rojo un poco más oscuro al pasar el ratón */
+  transform: scale(1.1);
+}
+/* Oculta el botón 'X' cuando el modo de recuperación está activo */
+.modal-wrapper.show-recuperar .modal-close-btn {
+  display: none;
 }

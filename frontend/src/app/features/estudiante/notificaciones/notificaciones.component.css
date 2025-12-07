@@ -1,0 +1,161 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Fondo difuminado */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  animation: fadeInBackdrop 0.25s ease-in-out;
+}
+
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: #fff;
+  color: #1a1a1a;
+  padding: 25px 30px;
+  width: 500px; /* Más ancho */
+  max-width: 95vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-content h3 {
+  margin: 0 0 20px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  color: #003366;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+li {
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #f9f9f9;
+  border-left: 6px solid #007bff; /* Indicador */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s, transform 0.2s;
+}
+
+li:hover {
+  background-color: #eef5fb;
+  transform: translateY(-2px);
+}
+
+li.leido {
+  color: #888;
+  background: #f0f0f0;
+  border-left-color: #ccc;
+}
+
+/* Estado de la notificación */
+.estado {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.estado.aprobado {
+  background-color: #28a745; /* Verde */
+}
+
+.estado.rechazado {
+  background-color: #dc3545; /* Rojo */
+}
+
+li button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+li button:hover {
+  background-color: #0056b3;
+}
+
+.cerrar-btn {
+  margin-top: 15px;
+  align-self: center;
+  padding: 10px 18px;
+  background-color: #555;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+
+.cerrar-btn:hover {
+  background-color: #333;
+}
+
+/* Scroll personalizado */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}

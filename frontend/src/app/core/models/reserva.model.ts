@@ -6,4 +6,5 @@ export interface Reserva {
   horario: string;
   estado: 'PENDIENTE' | 'APROBADA' | 'RECHAZADA';
   motivo: string;
+  cantidadPersonas?: number; // opcional
 }

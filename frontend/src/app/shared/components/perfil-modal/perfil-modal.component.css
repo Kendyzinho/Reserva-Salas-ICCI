@@ -5,30 +5,40 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semitransparente */
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000; /* Muy alto para estar encima de todo */
-  backdrop-filter: blur(3px); /* Efecto borroso bonito */
+  z-index: 2000;
+  backdrop-filter: blur(3px);
+  padding: 10px;
 }
 
 /* La tarjeta blanca */
 .modal-content {
-  background: white;
-  width: 90%;
+  background: #fff;
+  width: 100%;
   max-width: 500px;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   animation: fadeIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+/* Header */
 .modal-header {
   background-color: #003366;
   color: white;
@@ -38,32 +48,45 @@
   align-items: center;
 }
 
-.modal-header h2 { margin: 0; font-size: 1.2rem; }
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
 
 .close-btn {
   background: none;
   border: none;
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   cursor: pointer;
+  transition: transform 0.2s;
 }
 
+.close-btn:hover {
+  transform: rotate(90deg);
+}
+
+/* Body */
 .modal-body {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* Sección Avatar */
+/* Avatar */
 .avatar-section {
   text-align: center;
-  margin-bottom: 20px;
+  color: #000; /* Hace que todo el texto dentro sea negro */
 }
 
 .avatar-circle {
-  width: 60px;
-  height: 60px;
-  background-color: #ffcc00;
-  color: #003366;
-  font-size: 1.5rem;
+  width: 70px;
+  height: 70px;
+  background-color: #ffcc00; /* Fondo amarillo */
+  color: #000; /* Inicial en negro */
+  font-size: 1.8rem;
   font-weight: bold;
   border-radius: 50%;
   display: flex;
@@ -72,37 +95,88 @@
   margin: 0 auto 10px;
 }
 
+.avatar-section h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #000; /* Nombre en negro */
+}
+
 .badge {
   background-color: #eee;
-  padding: 3px 8px;
-  border-radius: 10px;
+  padding: 4px 10px;
+  border-radius: 12px;
   font-size: 0.8rem;
+  display: inline-block;
+  margin-top: 5px;
+  color: #000; /* Badge en negro */
+}
+
+/* Botón de edición */
+.btn-edit {
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 10px;
+  float: right;
+}
+
+.btn-edit:hover {
+  background-color: #002244;
 }
 
 /* Grilla de información */
 .info-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Dos columnas */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
 }
 
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
 .info-item label {
-  display: block;
   font-size: 0.75rem;
   color: #666;
   font-weight: bold;
+  margin-bottom: 5px;
   text-transform: uppercase;
 }
 
-.info-item span {
+.info-item span,
+.info-item input {
   font-size: 0.95rem;
   color: #333;
+  padding: 6px 8px;
+  border-radius: 5px;
 }
 
+.info-item input {
+  border: 1px solid #ccc;
+  transition: border 0.2s;
+}
+
+.info-item input:focus {
+  border-color: #003366;
+  outline: none;
+}
+
+/* Footer */
 .modal-footer {
-  padding: 15px;
+  padding: 15px 20px;
   text-align: right;
-  background-color: #f9f9f9;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .btn-primary {
@@ -112,8 +186,35 @@
   padding: 8px 20px;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 0.95rem;
 }
 
 .btn-primary:hover {
   background-color: #002244;
+}
+
+.btn-secondary {
+  background-color: #aaa;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.btn-secondary:hover {
+  background-color: #888;
+}
+
+/* Responsivo */
+@media (max-width: 400px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  .avatar-circle {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
 }

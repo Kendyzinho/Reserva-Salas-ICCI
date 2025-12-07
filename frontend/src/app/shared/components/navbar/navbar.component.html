@@ -9,66 +9,87 @@
   </div>
 
   <!-- ZONA DE USUARIO -->
-  @if (isLoggedIn && usuario) {
-  <div class="user-container">
-    <!-- Trigger (Nombre) -->
-    <div class="user-trigger" (click)="toggleMenu()">
-      <span class="user-name">{{ usuario.nombre }}</span>
-      <!-- Mostramos el rol con un color distinto si es Ayudante (opcional, por CSS) -->
-      <span class="user-role badge">{{ usuario.rol }}</span>
-      <span class="arrow">▼</span>
+  <ng-container *ngIf="isLoggedIn && usuario">
+    <div class="user-container">
+      <!-- Trigger (Nombre) -->
+      <div class="user-trigger" (click)="toggleMenu()">
+        <span class="user-name">{{ usuario.nombre }}</span>
+        <span class="user-role badge">{{ usuario.rol }}</span>
+        <span class="arrow">▼</span>
+      </div>
+
+      <!-- Menú Desplegable -->
+      <div class="dropdown-menu" *ngIf="menuAbierto">
+        <!-- COMÚN: Todos pueden ver su perfil -->
+        <a (click)="abrirPerfil()" class="dropdown-item"> 👤 Mi Perfil </a>
+        <a
+          routerLink="/calendario"
+          (click)="toggleMenu()"
+          class="dropdown-item"
+        >
+          📅 Calendario
+        </a>
+
+        <!-- OPCIONES PARA ESTUDIANTE -->
+        <ng-container *ngIf="!isAyudante">
+          <a
+            routerLink="/mis-reservas"
+            (click)="toggleMenu()"
+            class="dropdown-item"
+          >
+            📅 Mis Reservas
+          </a>
+          <ng-container *ngIf="!isAyudante">
+            <a (click)="abrirNotificaciones()" class="dropdown-item">
+              🔔 Notificaciones
+            </a>
+          </ng-container>
+        </ng-container>
+
+        <!-- OPCIONES PARA AYUDANTE -->
+        <ng-container *ngIf="isAyudante">
+          <a routerLink="/admin" (click)="toggleMenu()" class="dropdown-item">
+            📋 Gestionar Reserva
+          </a>
+          <a
+            routerLink="/admin/salas"
+            (click)="toggleMenu()"
+            class="dropdown-item"
+          >
+            🏢 Gestionar Salas
+          </a>
+          <a
+            routerLink="/admin/ayudante-password-panel"
+            (click)="toggleMenu()"
+            class="dropdown-item"
+          >
+            📋 Gestionar Contraseñas
+          </a>
+        </ng-container>
+
+        <hr class="divider" />
+
+        <!-- COMÚN: Cerrar Sesión -->
+        <button (click)="onLogout()" class="dropdown-item logout-btn">
+          🚪 Cerrar Sesión
+        </button>
+      </div>
     </div>
-
-    <!-- Menú Desplegable -->
-    @if (menuAbierto) {
-    <div class="dropdown-menu">
-      <!-- COMÚN: Todos pueden ver su perfil -->
-      <a (click)="abrirPerfil()" class="dropdown-item"> 👤 Mi Perfil </a>
-
-      <!-- OPCIONES PARA ESTUDIANTE -->
-      @if (!isAyudante) {
-      <a
-        routerLink="/mis-reservas"
-        (click)="toggleMenu()"
-        class="dropdown-item"
-      >
-        📅 Mis Reservas
-      </a>
-      }
-
-      <!-- OPCIONES PARA AYUDANTE -->
-      @if (isAyudante) {
-      <a routerLink="/admin" (click)="toggleMenu()" class="dropdown-item">
-        📋 Gestionar Reserva
-      </a>
-      <!-- Opción para HU-12: Gestionar Salas -->
-      <a routerLink="/admin/salas" (click)="toggleMenu()" class="dropdown-item">
-        🏢 Gestionar Salas
-      </a>
-
-      <a
-        routerLink="/admin/ayudante-password-panel"
-        (click)="toggleMenu()"
-        class="dropdown-item"
-      >
-        📋 Gestionar Contraseñas
-      </a>
-      }
-
-      <hr class="divider" />
-
-      <!-- COMÚN: Cerrar Sesión -->
-      <button (click)="onLogout()" class="dropdown-item logout-btn">
-        🚪 Cerrar Sesión
-      </button>
-    </div>
-    }
-  </div>
-  }
+  </ng-container>
 
   <!-- MODAL PERFIL -->
-  @if (mostrarModalPerfil) {
-  <app-perfil-modal [usuario]="usuario" (cerrar)="cerrarPerfil()">
+  <app-perfil-modal
+    *ngIf="mostrarModalPerfil"
+    [usuario]="usuario"
+    (cerrar)="cerrarPerfil()"
+  >
   </app-perfil-modal>
-  }
+
+  <!-- MODAL NOTIFICACIONES -->
+  <!-- MODAL NOTIFICACIONES -->
+  <app-notificaciones
+    [usuarioId]="usuarioIdNumber"
+    [mostrar]="mostrarModalNotificaciones"
+    (cerrar)="cerrarNotificaciones()"
+  ></app-notificaciones>
 </nav>

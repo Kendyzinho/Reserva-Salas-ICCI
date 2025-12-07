@@ -77,4 +77,12 @@ export class LoginComponent {
       },
     });
   }
+  cerrarModal() {
+    // Limpia (opcional)
+    this.loginForm.reset();
+    this.mostrarRecuperar = false;
+
+    // Regresa al home
+    this.router.navigate(['/home']);
+  }
 }

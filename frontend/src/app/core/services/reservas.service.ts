@@ -3,13 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReservasService {
   private http = inject(HttpClient);
-  
+
   // Asegúrate de que este puerto sea el correcto (donde corre tu backend node index.js)
-  private apiUrl = 'http://localhost:3000/api'; 
+  private apiUrl = 'http://localhost:3000/api';
 
   // 1. Obtener lista de salas
   getSalas(): Observable<any[]> {
@@ -47,7 +47,23 @@ export class ReservasService {
     return this.http.get<any[]>(`${this.apiUrl}/reservas/admin/todas`);
   }
 
-  cambiarEstadoReserva(id: number, estado: 'APROBADA' | 'RECHAZADA'): Observable<any> {
+  cambiarEstadoReserva(
+    id: number,
+    estado: 'APROBADA' | 'RECHAZADA'
+  ): Observable<any> {
     return this.http.patch(`${this.apiUrl}/reservas/${id}/estado`, { estado });
+  }
+
+  // 10. Actualizar reserva (solo fecha, motivo y cantidad de personas)
+  actualizarReserva(
+    reservaId: number | string,
+    data: { fecha: string; motivo: string; cantidadPersonas: number }
+  ): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/reservas/${reservaId}`, data);
+  }
+
+  // 11. Eliminar reserva
+  eliminarReserva(reservaId: number | string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/reservas/${reservaId}`);
   }
 }

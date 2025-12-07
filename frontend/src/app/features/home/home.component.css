@@ -1,111 +1,267 @@
-/* HERO */
+/* ===================== HERO DINÁMICO CON IMAGEN ===================== */
 .hero {
   width: 100vw;
-  height: 450px;
-  background: linear-gradient(to right, #1e1c62, #a7c4f2, #58c4d6);
+  height: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  /* Fondo con imagen */
+  background: url("/images/fondo.jpg") center/cover no-repeat;
+}
+
+/* Degradado suave sobre la imagen */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Degradado + patrones de partículas */
+  background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.25) 0%,
+      /* suave arriba */ rgba(0, 0, 0, 0.55) 100% /* oscurece abajo */
+    );
+  background-size: 50px 50px, 100% 100%;
+  animation: particlesMove 20s linear infinite;
+  z-index: 0;
+}
+
+/* Sombra desde "el piso" hacia arriba */
+.hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-content h1 {
-  font-size: 48px;
-  color: #0f2d5c;
-  margin-bottom: 10px;
+  font-family: "Roboto Mono", monospace;
+  font-size: 50px;
+  color: #fff;
+  margin-bottom: 15px;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+  animation: fadeUp 1s ease forwards;
 }
 
 .hero-content p {
   font-size: 20px;
-  color: #333;
+  color: #e0e0e0;
+  margin-bottom: 25px;
+  animation: fadeUp 1s ease 0.2s forwards;
 }
 
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Botón principal con efecto interactivo */
 .reserve-btn {
-  margin-top: 25px;
-  padding: 14px 40px;
-  background-color: #0c8a3f;
-  color: white;
+  padding: 16px 45px;
+  background: linear-gradient(90deg, #0c8a3f, #1fa65c);
+  color: #fff;
+  font-size: 20px;
   border: none;
   border-radius: 12px;
-  font-size: 22px;
   cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
 }
 
-/* FEATURES */
+.reserve-btn:hover {
+  transform: scale(1.08) rotate(-1deg);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(90deg, #1fa65c, #0c8a3f);
+}
+
+/* ===================== FEATURES ESTÉTICAS ===================== */
 .features {
   display: flex;
   justify-content: center;
   gap: 30px;
-  padding: 40px;
+  padding: 60px 20px;
   flex-wrap: wrap;
-  background-color: #f2f2f2;
+  background-color: #f8f9fb;
 }
 
 .feature-card {
-  width: 260px;
-  background: white;
-  padding: 25px;
-  border-radius: 14px;
+  width: 280px;
+  background: linear-gradient(145deg, #ffffff, #f1f4f8);
+  padding: 30px 20px;
+  border-radius: 18px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  perspective: 1000px;
+}
+
+.feature-card:hover {
+  transform: rotateY(8deg) rotateX(5deg) translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .feature-card h3 {
   color: #0f2d5c;
-  font-size: 22px;
-  margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 12px;
+  font-family: "Roboto Mono", monospace;
 }
 
-/* MODAL */
+.feature-card p {
+  color: #555;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ===================== MODAL LOGIN/REGISTRO ===================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 999;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .modal {
-  background: white;
-  padding: 28px;
+  background: #1e1c2e;
+  padding: 35px 30px;
   width: 420px;
-  border-radius: 14px;
+  border-radius: 18px;
   position: relative;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 20px #58c4d6;
+  color: #fff;
+  font-family: "Roboto", sans-serif;
+  transform: translateY(-50px);
+  opacity: 0;
+  animation: modalIn 0.5s ease forwards;
+}
+
+@keyframes modalIn {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .modal h2 {
   text-align: center;
-  font-size: 26px;
-  margin-bottom: 20px;
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #58c4d6;
 }
 
 .modal input {
   width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  padding: 14px;
+  margin-top: 12px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background: #2a2a3c;
+  color: #fff;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.modal input::placeholder {
+  color: #aaa;
+}
+
+.modal input:focus {
+  border-color: #1f4cdc;
+  box-shadow: 0 0 10px #1f4cdc;
+  outline: none;
 }
 
 .primary-btn {
   width: 100%;
-  margin-top: 18px;
-  padding: 12px;
-  background: #1f4cdc;
-  color: white;
+  margin-top: 20px;
+  padding: 14px;
+  background: linear-gradient(90deg, #1f4cdc, #58c4d6);
+  color: #fff;
+  font-size: 18px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primary-btn:hover {
+  background: linear-gradient(90deg, #58c4d6, #1f4cdc);
+  transform: translateY(-2px);
 }
 
 .close-btn {
   position: absolute;
-  right: 12px;
-  top: 12px;
+  right: 18px;
+  top: 18px;
   background: transparent;
   border: none;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
+  color: #ff5f5f;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #ff1f1f;
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media screen and (max-width: 768px) {
+  .features {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-content h1 {
+    font-size: 38px;
+  }
+
+  .hero-content p {
+    font-size: 18px;
+  }
+
+  .modal {
+    width: 90%;
+    padding: 25px;
+  }
 }

@@ -1,62 +1,93 @@
 <div class="modal-overlay" (click)="onCerrar()">
-  
   <div class="modal-content" (click)="$event.stopPropagation()">
-    
+    <!-- Header -->
     <div class="modal-header">
       <h2>Mi Perfil</h2>
       <button class="close-btn" (click)="onCerrar()">✖</button>
     </div>
 
+    <!-- Body -->
     <div class="modal-body">
       <div class="avatar-section">
-        <div class="avatar-circle">
-          {{ usuario?.nombre?.charAt(0) }}
-        </div>
-        <h3>{{ usuario?.nombre }} {{ usuario?.apellidos }}</h3>
-        <span class="badge">{{ usuario?.rol }}</span>
+        <div class="avatar-circle">{{ usuario?.nombre?.charAt(0) || "?" }}</div>
+        <h3>{{ usuario?.nombre || "No registrado" }}</h3>
+        <span class="badge">{{ usuario?.rol || "No asignado" }}</span>
       </div>
 
-      <hr>
+      <hr />
 
-      <div class="info-grid">
+      <!-- Botón de edición -->
+      <div style="text-align: right; margin-bottom: 10px">
+        <button *ngIf="!editando" class="btn-edit" (click)="habilitarEdicion()">
+          ✎ Editar
+        </button>
+      </div>
+
+      <form [formGroup]="perfilForm" class="info-grid">
+        <!-- Editable -->
         <div class="info-item">
-          <label>RUT</label>
-          <span>{{ usuario?.rut || 'No registrado' }}</span>
+          <label>Nombre</label>
+          <ng-container *ngIf="editando; else nombreTexto">
+            <input formControlName="nombre" type="text" />
+          </ng-container>
+          <ng-template #nombreTexto>
+            <span>{{ usuario?.nombre || "No registrado" }}</span>
+          </ng-template>
         </div>
+
         <div class="info-item">
           <label>Carrera</label>
-          <span>{{ usuario?.carrera || 'Ingeniería Civil en Computación' }}</span>
+          <ng-container *ngIf="editando; else carreraTexto">
+            <input formControlName="carrera" type="text" />
+          </ng-container>
+          <ng-template #carreraTexto>
+            <span>{{ usuario?.carrera || "No registrada" }}</span>
+          </ng-template>
         </div>
-        <div class="info-item">
-          <label>Correo Institucional</label>
-          <span>{{ usuario?.email }}</span>
-        </div>
+
         <div class="info-item">
           <label>Teléfono</label>
-          <span>{{ usuario?.telefono || '+56 9 ...' }}</span>
+          <ng-container *ngIf="editando; else telefonoTexto">
+            <input formControlName="telefono" type="text" />
+          </ng-container>
+          <ng-template #telefonoTexto>
+            <span>{{ usuario?.telefono || "No registrado" }}</span>
+          </ng-template>
+        </div>
+
+        <!-- Solo lectura -->
+        <div class="info-item">
+          <label>Email</label>
+          <span>{{ usuario?.email || "No registrado" }}</span>
         </div>
         <div class="info-item">
-          <label>Fecha Nacimiento</label>
-          <span>{{ usuario?.fechaNacimiento || '--/--/----' }}</span>
+          <label>RUT</label>
+          <ng-container *ngIf="editando; else rutTexto">
+            <input formControlName="rut" type="text" />
+          </ng-container>
+          <ng-template #rutTexto>
+            <span>{{ usuario?.rut || "No registrado" }}</span>
+          </ng-template>
         </div>
+
         <div class="info-item">
-          <label>Género</label>
-          <span>{{ usuario?.genero || 'No especificado' }}</span>
+          <label>Rol</label>
+          <span>{{ usuario?.rol || "No asignado" }}</span>
         </div>
-        <div class="info-item">
-          <label>Pueblo Originario</label>
-          <span>{{ usuario?.puebloOriginario ? 'Sí' : 'No' }}</span>
-        </div>
-        <div class="info-item">
-          <label>Discapacidad</label>
-          <span>{{ usuario?.discapacidad ? 'Sí' : 'No' }}</span>
-        </div>
-      </div>
+      </form>
     </div>
 
+    <!-- Footer -->
     <div class="modal-footer">
-      <button class="btn-primary" (click)="onCerrar()">Cerrar</button>
+      <button
+        *ngIf="editando"
+        class="btn-primary"
+        (click)="onGuardar()"
+        [disabled]="perfilForm.invalid"
+      >
+        Guardar
+      </button>
+      <button class="btn-secondary" (click)="onCerrar()">Cerrar</button>
     </div>
-
   </div>
 </div>

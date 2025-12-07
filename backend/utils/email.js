@@ -5,12 +5,12 @@ async function sendEmail(to, subject, text) {
     service: "gmail", // o tu proveedor
     auth: {
       user: "cesar.jimenez.20xx@gmail.com",
-      pass: "kkqw kvvd lsuq ldxr",
+      pass: "ansd yoya jawt kgus",
     },
   });
 
   await transporter.sendMail({
-    from: '"Soporte UTA" <TU_CORREO@gmail.com>',
+    from: '"Gestión UTA" <TU_CORREO@gmail.com>',
     to,
     subject,
     text,

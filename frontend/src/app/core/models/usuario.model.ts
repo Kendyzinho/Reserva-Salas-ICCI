@@ -3,10 +3,10 @@ export interface Usuario {
   email: string;
   password?: string;
   rol: 'ESTUDIANTE' | 'AYUDANTE';
-  
+
   // Nuevos campos para el perfil
-  nombre: string;       // Nombres
-  apellidos?: string;   // Apellidos
+  nombre: string; // Nombres
+  apellidos?: string; // Apellidos
   rut?: string;
   carrera?: string;
   fechaNacimiento?: string;

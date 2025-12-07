@@ -1,0 +1,18 @@
+<div class="modal" *ngIf="mostrar">
+  <div class="modal-content">
+    <h3>Notificaciones</h3>
+    <ul>
+      <li *ngFor="let n of notificaciones" [class.leido]="n.leido">
+        <div class="notificacion-texto">
+          {{ n.mensaje }} - {{ n.fecha | date : "short" }}
+        </div>
+        <div class="acciones">
+          <button *ngIf="!n.leido" (click)="marcarComoLeida(n)">
+            Marcar como leído
+          </button>
+        </div>
+      </li>
+    </ul>
+    <button class="cerrar-btn" (click)="mostrar = false">Cerrar</button>
+  </div>
+</div>

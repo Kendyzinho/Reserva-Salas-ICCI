@@ -43,7 +43,7 @@ export class AuthService {
     localStorage.removeItem('user');
     // 4. AVISAMOS A TODOS QUE YA NO HAY USUARIO
     this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/home']);
   }
 
   // Método auxiliar para obtener el valor actual sin suscribirse (síncrono)

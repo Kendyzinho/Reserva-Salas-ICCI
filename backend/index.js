@@ -64,6 +64,24 @@ app.get("/api/salas", (req, res) => {
   });
 });
 
+// DELETE /api/reservas/:id
+app.delete("/api/reservas/:id", (req, res) => {
+  const { id } = req.params;
+
+  const sql = "DELETE FROM reservas WHERE id = ?";
+
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.error("Error al eliminar reserva:", err);
+      return res
+        .status(500)
+        .json({ message: "Error en base de datos", error: err });
+    }
+
+    res.json({ message: "Reserva eliminada correctamente" });
+  });
+});
+
 // 2. Obtener reservas (Filtradas por Sala)
 app.get("/api/reservas", (req, res) => {
   const { salaId } = req.query;
@@ -134,6 +152,26 @@ app.post("/api/reservas", (req, res) => {
       .status(201)
       .json({ message: "Reserva creada con éxito", id: result.insertId });
   });
+});
+
+// PATCH /api/reservas/:id
+app.patch("/api/reservas/:id", (req, res) => {
+  const idNum = Number(req.params.id); // Convertir a número
+
+  const { fecha, motivo, cantidadPersonas } = req.body;
+
+  if (!fecha || !motivo || cantidadPersonas == null) {
+    return res.status(400).json({ message: "Faltan datos obligatorios" });
+  }
+
+  db.query(
+    "UPDATE reservas SET fecha = ?, motivo = ?, cantidad_personas = ? WHERE id = ?",
+    [fecha, motivo, Number(cantidadPersonas), idNum],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: err });
+      res.json({ message: "Reserva actualizada correctamente" });
+    }
+  );
 });
 
 // 4. Obtener historial de reservas de un usuario
@@ -238,18 +276,51 @@ app.get("/api/reservas/admin/todas", (req, res) => {
 });
 
 // 2. Actualizar estado de una reserva (Aprobar/Rechazar)
+// 2. Actualizar estado de una reserva (Aprobar/Rechazar)
 app.patch("/api/reservas/:id/estado", (req, res) => {
   const { id } = req.params;
   const { estado } = req.body;
 
-  const sql = "UPDATE reservas SET estado = ? WHERE id = ?";
+  // 1. Obtener datos de la reserva junto con el nombre de la sala
+  const sqlSelect = `
+    SELECT r.usuario_id, r.bloque_inicio, r.bloque_fin, s.nombre AS nombreSala
+    FROM reservas r
+    JOIN salas s ON r.sala_id = s.id
+    WHERE r.id = ?
+  `;
 
-  db.query(sql, [estado, id], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json(err);
-    }
-    res.json({ message: `Reserva ${estado} correctamente` });
+  db.query(sqlSelect, [id], (err, rows) => {
+    if (err) return res.status(500).json(err);
+    if (rows.length === 0)
+      return res.status(404).json({ message: "Reserva no encontrada" });
+
+    const reserva = rows[0];
+
+    // 2. Actualizar estado de la reserva
+    const sqlUpdate = "UPDATE reservas SET estado = ? WHERE id = ?";
+    db.query(sqlUpdate, [estado, id], (err2) => {
+      if (err2) return res.status(500).json(err2);
+
+      // 3. Crear notificación para el estudiante correspondiente
+      const mensaje = `Tu reserva en la sala "${reserva.nombreSala}" (Bloque ${reserva.bloque_inicio}-${reserva.bloque_fin}) ha sido ${estado}.`;
+
+      const sqlNotificacion =
+        "INSERT INTO notificaciones (usuario_id, mensaje) VALUES (?, ?)";
+      db.query(sqlNotificacion, [reserva.usuario_id, mensaje], (err3) => {
+        if (err3) {
+          console.error("Error al crear notificación:", err3);
+          return res.status(500).json({
+            message: "Error al crear notificación",
+            error: err3,
+          });
+        }
+
+        // 4. Responder al frontend confirmando actualización y notificación
+        res.json({
+          message: `Reserva ${estado} y notificación creada correctamente`,
+        });
+      });
+    });
   });
 });
 
@@ -308,11 +379,12 @@ app.patch("/api/ayudante/password-requests/:id/approve", (req, res) => {
         return res.status(404).json({ error: "Solicitud no encontrada" });
 
       const solicitud = rows[0];
+      const nuevaContrasena = solicitud.nueva_contrasena; // Obtener la nueva contraseña
 
       // Consulta 2: Actualizar contraseña del usuario
       db.query(
         "UPDATE usuarios SET password = ? WHERE id = ?",
-        [solicitud.nueva_contrasena, solicitud.id_usuario],
+        [nuevaContrasena, solicitud.id_usuario],
         (err2) => {
           if (err2) {
             console.error(err2);
@@ -332,11 +404,20 @@ app.patch("/api/ayudante/password-requests/:id/approve", (req, res) => {
                   .status(500)
                   .json({ error: "Error al marcar solicitud" });
               }
-              sendEmail(
-                solicitud.email,
-                "Cambio de contraseña aprobado",
-                "Tu contraseña ha sido actualizada exitosamente por un ayudante."
-              );
+
+              // ✨ MENSAJE PERSONALIZADO DE APROBACIÓN
+              const subjectAprobado =
+                "✅ Solicitud de Cambio de Contraseña Aprobada";
+              const bodyAprobado =
+                `Estimado usuario,\n\n` +
+                `Le informamos que su solicitud de cambio de contraseña ha sido **aprobada** por un ayudante.\n\n` +
+                `Su nueva contraseña es: **${nuevaContrasena}**\n\n` +
+                `Le recomendamos que inicie sesión inmediatamente con esta clave temporal.\n\n` +
+                `Saludos cordiales,\n` +
+                `Equipo de Soporte.`;
+
+              sendEmail(solicitud.email, subjectAprobado, bodyAprobado);
+
               res.json({
                 success: true,
                 message: "Solicitud aprobada y correo enviado",
@@ -378,11 +459,18 @@ app.patch("/api/ayudante/password-requests/:id/reject", (req, res) => {
             return res.status(500).json({ error: "Error al marcar solicitud" });
           }
 
-          sendEmail(
-            solicitud.email,
-            "Cambio de contraseña rechazado",
-            "Tu solicitud de cambio de contraseña ha sido rechazada por un ayudante."
-          );
+          // ✨ MENSAJE PERSONALIZADO DE RECHAZO
+          const subjectRechazado =
+            "❌ Solicitud de Cambio de Contraseña Rechazada";
+          const bodyRechazado =
+            `Estimado usuario,\n\n` +
+            `Su solicitud de cambio de contraseña ha sido **rechazada**.\n\n` +
+            `La solicitud fue rechazada debido a que no se pudo verificar la información de identidad proporcionada. Por favor, asegúrese de que todos los datos ingresados (Nombre Completo, RUT, Correo, Contraseña actual) coincidan exactamente con nuestros registros e intente nuevamente.\n\n` +
+            `Si necesita asistencia adicional, por favor contacte a soporte técnico.\n\n` +
+            `Saludos cordiales,\n` +
+            `Equipo de Soporte.`;
+
+          sendEmail(solicitud.email, subjectRechazado, bodyRechazado);
 
           res.json({
             success: true,
@@ -394,7 +482,6 @@ app.patch("/api/ayudante/password-requests/:id/reject", (req, res) => {
   );
 });
 
-// Obtener todas las solicitudes pendientes
 // Obtener todas las solicitudes pendientes
 app.get("/api/ayudante/password-requests", (req, res) => {
   // La consulta no debe tener el salto de línea al inicio (antes de SELECT)
@@ -436,6 +523,48 @@ app.get("/api/check-email", (req, res) => {
     const exists = result.length > 0;
 
     res.json({ exists: exists });
+  });
+});
+
+// backend: server.js o usuarios.js
+app.patch("/api/usuarios/:id", (req, res) => {
+  const { id } = req.params; // id viene como string
+  const { nombre, carrera, telefono, rut } = req.body;
+
+  const sql =
+    "UPDATE usuarios SET nombre = ?, carrera = ?, telefono = ?, rut = ? WHERE id = ?";
+  const values = [nombre, carrera, telefono, rut, Number(id)];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ message: "Error al actualizar usuario", error: err });
+    }
+    res.json({ message: "Usuario actualizado correctamente" });
+  });
+});
+
+// GET /api/notificaciones/usuario/:id
+app.get("/api/notificaciones/usuario/:id", (req, res) => {
+  const { id } = req.params;
+
+  const sql =
+    "SELECT * FROM notificaciones WHERE usuario_id = ? ORDER BY fecha DESC";
+  db.query(sql, [id], (err, rows) => {
+    if (err) return res.status(500).json(err);
+    res.json(rows);
+  });
+});
+
+// PATCH /api/notificaciones/:id/leer
+app.patch("/api/notificaciones/:id/leer", (req, res) => {
+  const { id } = req.params;
+
+  db.query("UPDATE notificaciones SET leido = 1 WHERE id = ?", [id], (err) => {
+    if (err) return res.status(500).json(err);
+    res.json({ message: "Notificación marcada como leída" });
   });
 });
 
